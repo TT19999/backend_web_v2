@@ -88,13 +88,19 @@ class JwtAuthController extends Controller
   
     public function getUser(Request $request)
     {
-        $this->validate($request, [
-            'token' => 'required'
-        ]);
-  
-        $user = JWTAuth::authenticate($request->token);
-  
-        return response()->json(['user' => $user]);
+        try{
+            if(! $user = JWTAuth :: parseToken() ->authenticate()){
+                return response() -> json(['user_not_found'],404);
+            }
+        }catch(Tymon\JWTAuth\Exceptions\TokenExpiredException $e){
+            return response()->json(['token_invalid'],$e->getStatusCode());
+        }catch(Tymon\JWTAuth\Exceptions\TokenInvalidException $e){
+            return response()->json(['token_invalid'],$e->getStatusCode());
+        }catch(Tymon\JWTAuth\Exceptions\JWTException $e){
+            return response()->json(['token_invalid'],$e->getStatusCode());
+        }
+
+        return response()->json(compact('user'));
     }
 
     public function getAllUser(){
