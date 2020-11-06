@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -65,12 +65,12 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'url' => 'postgres://fefphstotsmbsp:c7ade6c4e3207a84e3c6213a033ed033201cc549aee6bd0817888119ea5f1cbf@ec2-34-194-198-176.compute-1.amazonaws.com:5432/d5v80k818mtu03',
+            'host' => "ec2-34-194-198-176.compute-1.amazonaws.com",
+            'port' => '5432',
+            'database' => "d5v80k818mtu03",
+            'username' => "fefphstotsmbsp",
+            'password' => 'c7ade6c4e3207a84e3c6213a033ed033201cc549aee6bd0817888119ea5f1cbf',
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
