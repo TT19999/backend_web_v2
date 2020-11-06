@@ -25,3 +25,4 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('logout',[JwtAuthController::class, 'logout']);
     Route::get('user-info', [JwtAuthController::class, 'getUser']);
 });
+Route :: get('/getUser', [JwtAuthController::class, 'getAllUser']);

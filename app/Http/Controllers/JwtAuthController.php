@@ -96,4 +96,8 @@ class JwtAuthController extends Controller
   
         return response()->json(['user' => $user]);
     }
+
+    public function getAllUser(){
+        return User::get();
+    }
 }
