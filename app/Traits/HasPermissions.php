@@ -21,6 +21,9 @@ trait HasPermissions
         return false;
     }
 
+    public function getRole(){
+        return $this->roles;
+    }
     public function hasPermission($permission = null)
     {
         if (is_null($permission)) {

@@ -9,6 +9,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\Http\Foundation\Response;
+use App\Models\Role;
+use DB;
+use Hash;
  
 class JwtAuthController extends Controller
 {
@@ -17,62 +20,76 @@ class JwtAuthController extends Controller
     public function register(Request $request)
     {
  
-         $validator = Validator::make($request->all(), 
-                      [ 
-                      'name' => 'required',
-                      'email' => 'required|email',
-                      'password' => 'required',  
-                     ]);  
- 
-         if ($validator->fails()) {  
- 
-               return response()->json(['error'=>$validator->errors()], 401); 
- 
-            }   
- 
- 
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->save();
-  
-        if ($this->token) {
-            return $this->login($request);
+        $validate = Validator::make($request ->json()->all() ,[
+            'name' => 'min:2',
+            'email'=> 'string',
+            'password' => 'min:6'
+        ]);
+        if($validate ->fails()){
+            return \response() -> json($validate->errors()->toJson(),400);
         }
-  
-        return response()->json([
-            'success' => true,
-            'data' => $user
-        ], Response::HTTP_OK);
+
+        $user =User::create([
+            'name'=>$request->input('name'),
+            'email'=>$request->input('email'),
+            'password' => Hash::make($request->json()->get('password')),
+        ]);
+
+        $role_user =DB::table('role_user')->insert([
+            'role_id' => 2,
+            'user_id' => $user->id,
+        ]);
+        $resUser= $user;
+        $token = JWTAuth::fromUser($user);
+        // return $role;
+        return \response()->json([
+            'user' => $resUser,    
+            'token' => $token,
+            'role' => 'user',
+        ],201);
     }
   
     public function login(Request $request)
     {
-        $input = $request->only('email', 'password');
-        $jwt_token = null;
-  
-        if (!$jwt_token = JWTAuth::attempt($input)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid Email or Password',
-            ], Response::HTTP_UNAUTHORIZED);
+        $creadentials = $request ->json()->all();
+        // return \response()->json($creadentials);
+        try{
+            if(! $token = JWTAuth::attempt($creadentials)){
+                return response() -> json(['error' => 'invalid_vreadentials'],400);
+
+            }
+        }catch(JWTException $e){
+            return \response()->json(['error'=>'could_not create token'],500);
         }
-  
-        return response()->json([
-            'success' => true,
-            'token' => $jwt_token,
+        $user = JWTAuth::user();
+        return \response()->json([
+            'token' => $token,
+            'role' => $user->getRole()->first()->name,
         ]);
+
+        // $input = $request->only('email', 'password');
+        // $jwt_token = null;
+  
+        // if (!$jwt_token = JWTAuth::attempt($input)) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Invalid Email or Password',
+        //     ], Response::HTTP_UNAUTHORIZED);
+        // }
+
+        // $user = JWTAuth::authenticate($jwt_token);
+        // $role = $user->getRole()->first()->name;
+        // return response()->json([
+        //     'success' => true,
+        //     'token' => $jwt_token,
+        //     'role' => $role,
+        // ]);
     }
   
     public function logout(Request $request)
     {
-        $this->validate($request, [
-            'token' => 'required'
-        ]);
-  
         try {
-            JWTAuth::invalidate($request->token);
+            JWTAuth :: parseToken()->invalidate();
   
             return response()->json([
                 'success' => true,
@@ -99,8 +116,12 @@ class JwtAuthController extends Controller
         }catch(Tymon\JWTAuth\Exceptions\JWTException $e){
             return response()->json(['token_invalid'],$e->getStatusCode());
         }
-
-        return response()->json(compact('user'));
+        $resuser = JWTAuth::user();
+        return response()->json([
+            'success' => true,
+            'user' => $resuser,
+            'role' => $user->getRole()->first()->name,
+        ]);
     }
 
     public function getAllUser(){

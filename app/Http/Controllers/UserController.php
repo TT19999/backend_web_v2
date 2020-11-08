@@ -7,16 +7,17 @@ use App\Models\User_info;
 use App\Models\User;
 use App\Models\Role;
 
+use JWTAuth;
+use Validator;
+use App\Http\Controllers\Controller;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Symfony\Component\Http\Foundation\Response;
+use DB;
+use Hash;
+
 class UserController extends Controller
 {
     public function checkView(){
-        $user = User::find(5);
-        // return $user;
-        $roles =Role :: find('1');
-        // return $roles->permissions;
-        if( $user && $user->can('update', User_info::class)){
-            return response()->json('true');
-        }
-        return response()->json('false');
+        return(JWTAuth::user());
     }
 }
