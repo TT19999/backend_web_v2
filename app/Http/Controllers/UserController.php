@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function checkView(){
         $user = User::find(3);
-        // return $user->role[0]->name;
+        return $user;
         $roles =Role :: find('1');
         // return $roles->permissions;
         if($user->can('update', User_info::class)){
