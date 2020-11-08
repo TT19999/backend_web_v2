@@ -5,10 +5,11 @@ namespace App\Models;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Traits\HasPermissions;
  
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+    use Notifiable, HasPermissions;
  
     protected $fillable = [
         'name', 'email', 'password',
@@ -32,4 +33,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+    
+    public function role(){
+        return $this->belongsToMany('App\Models\Role', 'role_user','user_id','role_id');
+    }
 }
+

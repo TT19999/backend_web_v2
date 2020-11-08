@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JwtAuthController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,7 +23,9 @@ Route::post('/register', [JwtAuthController::class, 'register']);
   
 Route::group(['middleware' => 'auth.jwt'], function () {
  
-    Route::get('logout',[JwtAuthController::class, 'logout']);
-    Route::get('user-info', [JwtAuthController::class, 'getUser']);
+    Route :: get('logout',[JwtAuthController::class, 'logout']);
+    Route :: get('user-info', [JwtAuthController::class, 'getUser']);
 });
+
 Route :: get('/getUser', [JwtAuthController::class, 'getAllUser']);
+Route :: get('/check', [UserController::class, 'checkView']);
