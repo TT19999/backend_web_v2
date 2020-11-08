@@ -53,7 +53,7 @@ class UserInfoPolicy
      */
     public function update(User $user)
     {
-        return ( ($user->hasRole('admin')));
+        return ( $user && ($user->hasRole('admin')));
     }
 
     /**
