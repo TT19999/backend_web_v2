@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JwtAuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,3 +32,12 @@ Route :: get('/getUser', [JwtAuthController::class, 'getAllUser']);
 Route :: get('/check', [UserController::class, 'checkView']);
 Route :: post('/testimage', [UserController::class, 'testImage']);
 Route :: get('/indeximage', [UserController::class, 'index']) -> name('image.index');
+
+
+//
+
+Route :: get('/profile/getUserInfo', [ProfileController::class,'getUserInfo']);
+Route :: put('/profile/editUserInfo',[ProfileController::class,'editUserInfo']);
+Route :: post('/profile/editAvatar',[ProfileController::class,'editAvatar']);
+Route :: post('/profile/editCover',[ProfileController::class,'editCover']);
+Route :: delete('/profile/delete',[ProfileController::class,'deleteUser']);

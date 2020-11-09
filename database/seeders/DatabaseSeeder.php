@@ -29,6 +29,21 @@ class DatabaseSeeder extends Seeder
                 'address' => 'thuy phuong ha noi',
                 'describe' => 'ba vi',
             ],
+            [
+                'user_id' => 4,
+                'address' => 'ha noi',
+                'describe' => 'ba vi',
+            ],
+            [
+                'user_id' => 5,
+                'address' => 'thuy phuong ha noi',
+                'describe' => 'ba vi',
+            ],
+            [
+                'user_id' => 6,
+                'address' => 'thuy phuong ha noi',
+                'describe' => 'ba vi',
+            ],
         ]);
     }
 }

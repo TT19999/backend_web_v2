@@ -63,9 +63,9 @@ class UserInfoPolicy
      * @param  \App\Models\User_info  $userInfo
      * @return mixed
      */
-    public function delete(User $user, User_info $userInfo)
+    public function delete(User $user, User $userDelete)
     {
-        return ($user && ($user->hasPermission('delete_info')));
+        return (($user->hasPermission('delete_info')));
     }
 
     /**
