@@ -29,3 +29,5 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
 Route :: get('/getUser', [JwtAuthController::class, 'getAllUser']);
 Route :: get('/check', [UserController::class, 'checkView']);
+Route :: post('/testimage', [UserController::class, 'testImage']);
+Route :: get('/indeximage', [UserController::class, 'index']) -> name('image.index');
