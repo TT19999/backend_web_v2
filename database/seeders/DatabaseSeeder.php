@@ -13,22 +13,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('permission_role')->insert([
-            ['permission_id' => 1, 'role_id' => 1],
-            ['permission_id' => 2, 'role_id' => 1],
-            ['permission_id' => 3, 'role_id' => 1],
-            ['permission_id' => 4, 'role_id' => 1],
-        ]);
-        DB::table('permission_role')->insert([
-            ['permission_id' => 1, 'role_id' => 2],
-            ['permission_id' => 2, 'role_id' => 2],
-            ['permission_id' => 4, 'role_id' => 2],
-        ]);
-        DB::table('permission_role')->insert([
-            ['permission_id' => 9, 'role_id' => 3],
-            ['permission_id' => 1, 'role_id' => 3],
-            ['permission_id' => 2, 'role_id' => 3],
-            ['permission_id' => 4, 'role_id' => 3],
+        DB::table('user_info')->insert([
+            [
+                'user_id' => 1,
+                'address' => 'ha noi',
+                'describe' => 'ba vi',
+            ],
+            [
+                'user_id' => 2,
+                'address' => 'thuy phuong ha noi',
+                'describe' => 'ba vi',
+            ],
+            [
+                'user_id' => 3,
+                'address' => 'thuy phuong ha noi',
+                'describe' => 'ba vi',
+            ],
         ]);
     }
 }

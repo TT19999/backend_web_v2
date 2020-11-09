@@ -39,6 +39,9 @@ class JwtAuthController extends Controller
             'role_id' => 2,
             'user_id' => $user->id,
         ]);
+        DB::table('user_info') ->insert([
+            'user_id' => $user->id,
+        ]);
         $resUser= $user;
         $token = JWTAuth::fromUser($user);
         // return $role;

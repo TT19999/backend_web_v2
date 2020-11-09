@@ -34,8 +34,10 @@ class UserController extends Controller
     public function testImage(Request $request){
         foreach ($request->files as $file) {
             $fileName = time().'_'.$file->getClientOriginalName();
-            Storage::putFileAs('files', $file,$fileName,'avatar');
+            $path = Storage::putFileAs('files', $file,$fileName,'avatar');
+            return $path;
         }
+        
         return redirect()->route('image.index');
     }
 }
