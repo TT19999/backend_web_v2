@@ -35,7 +35,6 @@ class UserController extends Controller
         foreach ($request->files as $file) {
             $fileName = time().'_'.$file->getClientOriginalName();
             $path = Storage::putFileAs('files', $file,$fileName,'avatar');
-            return $path;
         }
         
         return redirect()->route('image.index');
