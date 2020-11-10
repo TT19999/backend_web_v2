@@ -13,36 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('user_info')->insert([
+        DB::table('permissions')->insert([
             [
-                'user_id' => 1,
-                'address' => 'ha noi',
-                'describe' => 'ba vi',
+                'name' => 'view_trip',
             ],
             [
-                'user_id' => 2,
-                'address' => 'thuy phuong ha noi',
-                'describe' => 'ba vi',
+                'name' => 'edit_trip',
             ],
             [
-                'user_id' => 3,
-                'address' => 'thuy phuong ha noi',
-                'describe' => 'ba vi',
+                'name' => 'create_trip',
             ],
             [
-                'user_id' => 4,
-                'address' => 'ha noi',
-                'describe' => 'ba vi',
-            ],
-            [
-                'user_id' => 5,
-                'address' => 'thuy phuong ha noi',
-                'describe' => 'ba vi',
-            ],
-            [
-                'user_id' => 6,
-                'address' => 'thuy phuong ha noi',
-                'describe' => 'ba vi',
+                'name' => 'delete_trip',
             ],
         ]);
     }

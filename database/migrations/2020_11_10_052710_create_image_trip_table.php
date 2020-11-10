@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPaypalEmailToUserInfoTable extends Migration
+class CreateImageTripTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddPaypalEmailToUserInfoTable extends Migration
      */
     public function up()
     {
-        Schema::table('user_info', function (Blueprint $table) {
-            $table->string('pay_email')->nullable();
+        Schema::create('image_trips', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->foreignId('trip_id')->constrained('trips')->onDelete('cascade');
+            $table->string('path');
         });
     }
 
@@ -25,8 +27,6 @@ class AddPaypalEmailToUserInfoTable extends Migration
      */
     public function down()
     {
-        Schema::table('user_info', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('image_trip');
     }
 }
