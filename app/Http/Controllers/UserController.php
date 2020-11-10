@@ -32,6 +32,7 @@ class UserController extends Controller
     }
 
     public function testImage(Request $request){
+        return ($request->files->count());
         foreach ($request->files as $file) {
             $fileName = time().'_'.$file->getClientOriginalName();
             $path = Storage::putFileAs('files', $file,$fileName,'avatar');

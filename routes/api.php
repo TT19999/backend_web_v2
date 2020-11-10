@@ -41,14 +41,18 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route :: post('/trip/create', [TripController::class,'createTrips']);
     Route :: put('/trip/edit',[TripController::class,'editTrips']);
     Route :: delete('/trip/delete', [TripController::class,'deleteTrips']);
-    Route :: post('/trip/updateCover',[TripController::class,'updateCover']);
+    Route :: post('/trip/updateCover/{trip}',[TripController::class,'updateCover']);
+    Route :: post('/trip/addImage/{trip}',[TripController::class,'addImage']);
+    
 });
 Route :: get('/trip/byId', [TripController::class,'getTripById']);
 Route :: get('/trip', [TripController::class,'getAllTrip']);
 Route :: post('/trip/search',[TripController::class,'search']);
+Route :: post('/trip/searchTripByLocation', [TripController::class,'searchTripByLocation']);
+Route :: get('/trip/location', [TripController::class,'getAllLocation']);
 
     Route :: get('/check', [UserController::class, 'checkView']);
     Route :: post('/testimage', [UserController::class, 'testImage']);
     Route :: get('/indeximage', [UserController::class, 'index']) -> name('image.index');
-
+Route :: get('/trip/getImage/{trip}',[TripController::class,'getImage']);
 

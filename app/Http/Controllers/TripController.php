@@ -103,9 +103,22 @@ class TripController extends Controller
         ]); 
     }
 
+    public function getAllLocation(){
+        $location = DB::table('new_trips')->select('location')->distinct()->get();
+        return response()->json(compact('location'));
+    }
 
     public function searchTripByLocation(){
-        Trip::select('*')->where('location');
+        $searchterm = $request->input('location');
+
+        $searchResults = (new Search())
+        ->registerModel(Trip::class, function (ModelSearchAspect $modelSearchAspect) {
+            $modelSearchAspect
+                ->addExactSearchableAttribute('location');// only return results that exactly match
+        })
+        ->perform($searchterm);
+
+        return \response()->json(\compact('searchResults','searchterm'));
     }
 
     public function search(Request $request)
@@ -121,13 +134,12 @@ class TripController extends Controller
     }
 
 
-    public function updateCover(Request $request){
+    public function updateCover(Request $request, Trip $trip){
         $user = JWTAuth :: parseToken() ->authenticate();
 
         if($request->hasFile('cover')){
             $fileName = time().'_'.$request->cover->getClientOriginalName();
             $path = Storage::putFileAs('coverTrip', $request->cover,$fileName);
-            $trip = Trip::where('user_id','=',$request->trip_id)->first();
             $trip ->update([
                 'cover' => $path,
             ]);
@@ -144,5 +156,29 @@ class TripController extends Controller
         }
     }
 
+    public function addImage(Request $request,Trip $trip){
+        $user = JWTAuth :: parseToken() ->authenticate();
+        if($user->can('update', $trip)){
+            foreach ($request->all() as $file) {
+                $fileName = time().'_'.$file->getClientOriginalName();
+                $path = Storage::putFileAs('files', $file,$fileName);
+                Image_trip::insert([
+                    'trip_id' => $trip->id,
+                    'path' => $path
+                ]);
+            }
+            return response()->json([
+                'success' => true,
+            ]);
+        }
+        else return response()->json([
+            'success' => false,
+        ]);
+    }
+
+    public function getImage(Trip $trip){
+        $image_trip = Image_trip :: where('trip_id','=',$trip->id)->get();
+        return response()->json(compact('image_trip'));
+    }
 }
 
