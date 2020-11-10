@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JwtAuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TripController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -38,9 +39,16 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route :: post('/profile/editCover',[ProfileController::class,'editCover']);
     Route :: delete('/profile/delete',[ProfileController::class,'deleteUser']);
 
+
+    //trip  
+    Route :: post('/trip/create', [TripController::class,'createTrips']);
+    Route :: put('/trip/edit',[TripController::class,'editTrips']);
+    Route :: delete('/trip/delete', [TripController::class,'deleteTrips']);
+    Route :: post('/trip/updateCover',[TripController::class,'updateCover']);
 });
-
-
+Route :: get('/trip/byId', [TripController::class,'getTripById']);
+Route :: get('/trip', [TripController::class,'getAllTrip']);
+Route :: post('/trip/search',[TripController::class,'search']);
 
 
 

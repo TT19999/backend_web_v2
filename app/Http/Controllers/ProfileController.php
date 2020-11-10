@@ -30,17 +30,7 @@ class ProfileController extends Controller
     }
 
     public function editUserInfo(Request $request) {
-        try{
-            if(! $user = JWTAuth :: parseToken() ->authenticate()){
-                return response() -> json(['user_not_found'],404);
-            }
-        }catch(Tymon\JWTAuth\Exceptions\TokenExpiredException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\TokenInvalidException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\JWTException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }
+        $user = JWTAuth :: parseToken() ->authenticate();
         $user_id= $request->input('user_id') ? $request->input('user_id') : $user->id;
         $user_info = User_info::where('user_id','=',$user_id)->first();
         if($user->can('restore', $user_info)){

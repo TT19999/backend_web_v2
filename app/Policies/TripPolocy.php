@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Trips;
+use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -28,7 +28,7 @@ class TripPolocy
      * @param  \App\Models\Trips  $trips
      * @return mixed
      */
-    public function view(User $user, Trips $trips)
+    public function view(User $user, Trip $trips)
     {
         //
     }
@@ -51,9 +51,9 @@ class TripPolocy
      * @param  \App\Models\Trips  $trips
      * @return mixed
      */
-    public function update(User $user, Trips $trips)
+    public function update(User $user, Trip $trip)
     {
-        return (($user->hasPermission('restore_trip') || ($user->id == $trips->user_id)));
+        return (($user->hasPermission('restore_trip') || ($user->id == $trip->user_id)));
     }
 
     /**
@@ -63,9 +63,9 @@ class TripPolocy
      * @param  \App\Models\Trips  $trips
      * @return mixed
      */
-    public function delete(User $user, Trips $trips)
+    public function delete(User $user, Trip $trip)
     {
-        return (($user->hasPermission('delete_trip') || ($user->id == $trips->user_id)));
+        return (($user->hasPermission('delete_trip') || ($user->id == $trip->user_id)));
     }
 
     /**
@@ -75,7 +75,7 @@ class TripPolocy
      * @param  \App\Models\Trips  $trips
      * @return mixed
      */
-    public function restore(User $user, Trips $trips)
+    public function restore(User $user, Trip $trip)
     {
         return (($user->hasPermission('restore_trip') || ($user->id == $trips->user_id)));
     }
@@ -87,7 +87,7 @@ class TripPolocy
      * @param  \App\Models\Trips  $trips
      * @return mixed
      */
-    public function forceDelete(User $user, Trips $trips)
+    public function forceDelete(User $user, Trip $trip)
     {
         //
     }
