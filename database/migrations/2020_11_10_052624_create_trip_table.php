@@ -13,20 +13,9 @@ class CreateTripTable extends Migration
      */
     public function up()
     {
-        Schema::create('trips', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->text('description');
-            $table->string('location');
-            $table->string('duration');
-            $table->time('departure');
-            $table->string('price');
-            $table->string('languages');
-            $table->string('group-size');
-            $table->string('categories');
-            $table->string('transportation');
-            $table->text('includes');
-            $table->text('excludes');
+        Schema::table('trips', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->timestamps();        
         });
     }
 

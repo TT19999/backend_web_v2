@@ -41,7 +41,7 @@ class TripPolocy
      */
     public function create(User $user)
     {
-        //
+        return $user->hasPermission('create_trip');
     }
 
     /**
@@ -53,7 +53,7 @@ class TripPolocy
      */
     public function update(User $user, Trips $trips)
     {
-        //
+        return (($user->hasPermission('restore_trip') || ($user->id == $trips->user_id)));
     }
 
     /**
