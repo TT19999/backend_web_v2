@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTripTable extends Migration
+class CreateNewImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateTripTable extends Migration
      */
     public function up()
     {
-        Schema::table('trips', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->timestamps();
+        Schema::create('new_images', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->foreignId('trip_id')->constrained('new_trips')->onDelete('cascade');
+            $table->string('path');
         });
     }
 
@@ -26,6 +27,6 @@ class CreateTripTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('trip');
+        Schema::dropIfExists('new_images');
     }
 }

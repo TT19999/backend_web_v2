@@ -17,18 +17,7 @@ use Hash;
 class ProfileController extends Controller
 {
     public function getUserInfo(){
-        try{
-            if(! $user = JWTAuth :: parseToken() ->authenticate()){
-                return response() -> json(['user_not_found'],404);
-            }
-        }catch(Tymon\JWTAuth\Exceptions\TokenExpiredException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\TokenInvalidException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\JWTException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }
-
+        $user = JWTAuth :: parseToken() ->authenticate();
         $data=DB::table('users')->join('user_info', 'users.id', '=','user_info.user_id')
                             ->select('users.name','users.email','user_info.*')
                             ->where('users.id',$user->id)->get();
@@ -70,17 +59,7 @@ class ProfileController extends Controller
     }
 
     public function editAvatar(Request $request){
-        try{
-            if(! $user = JWTAuth :: parseToken() ->authenticate()){
-                return response() -> json(['user_not_found'],404);
-            }
-        }catch(Tymon\JWTAuth\Exceptions\TokenExpiredException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\TokenInvalidException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\JWTException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }
+        $user = JWTAuth :: parseToken() ->authenticate();
 
         if($request->hasFile('avatar')){
             $fileName = time().'_'.$request->avatar->getClientOriginalName();
@@ -103,17 +82,7 @@ class ProfileController extends Controller
     }
 
     public function editCover(Request $request){
-        try{
-            if(! $user = JWTAuth :: parseToken() ->authenticate()){
-                return response() -> json(['user_not_found'],404);
-            }
-        }catch(Tymon\JWTAuth\Exceptions\TokenExpiredException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\TokenInvalidException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\JWTException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }
+        $user = JWTAuth :: parseToken() ->authenticate();
 
         if($request->hasFile('cover')){
             $fileName = time().'_'.$request->cover->getClientOriginalName();
@@ -136,17 +105,7 @@ class ProfileController extends Controller
     }
 
     public function deleteUser(Request $request){
-        try{
-            if(! $user = JWTAuth :: parseToken() ->authenticate()){
-                return response() -> json(['user_not_found'],404);
-            }
-        }catch(Tymon\JWTAuth\Exceptions\TokenExpiredException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\TokenInvalidException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\JWTException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }
+        $user = JWTAuth :: parseToken() ->authenticate();
         $userDelete = User::find($request->user_id);
         if($userDelete){
             if($user->can('delete', $userDelete)){

@@ -65,7 +65,7 @@ class TripPolocy
      */
     public function delete(User $user, Trips $trips)
     {
-        //
+        return (($user->hasPermission('delete_trip') || ($user->id == $trips->user_id)));
     }
 
     /**
@@ -77,7 +77,7 @@ class TripPolocy
      */
     public function restore(User $user, Trips $trips)
     {
-        //
+        return (($user->hasPermission('restore_trip') || ($user->id == $trips->user_id)));
     }
 
     /**

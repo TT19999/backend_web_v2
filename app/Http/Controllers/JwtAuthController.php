@@ -36,7 +36,7 @@ class JwtAuthController extends Controller
         ]);
 
         $role_user =DB::table('role_user')->insert([
-            'role_id' => 2,
+            'role_id' => 3,
             'user_id' => $user->id,
         ]);
         DB::table('user_info') ->insert([

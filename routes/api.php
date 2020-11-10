@@ -26,18 +26,21 @@ Route::group(['middleware' => 'auth.jwt'], function () {
  
     Route :: get('logout',[JwtAuthController::class, 'logout']);
     Route :: get('user-info', [JwtAuthController::class, 'getUser']);
+
+    Route :: get('/check', [UserController::class, 'checkView']);
+    Route :: post('/testimage', [UserController::class, 'testImage']);
+    Route :: get('/indeximage', [UserController::class, 'index']) -> name('image.index');
+
+    // profile
+    Route :: get('/profile/getUserInfo', [ProfileController::class,'getUserInfo']);
+    Route :: put('/profile/editUserInfo',[ProfileController::class,'editUserInfo']);
+    Route :: post('/profile/editAvatar',[ProfileController::class,'editAvatar']);
+    Route :: post('/profile/editCover',[ProfileController::class,'editCover']);
+    Route :: delete('/profile/delete',[ProfileController::class,'deleteUser']);
+
 });
 
-Route :: get('/getUser', [JwtAuthController::class, 'getAllUser']);
-Route :: get('/check', [UserController::class, 'checkView']);
-Route :: post('/testimage', [UserController::class, 'testImage']);
-Route :: get('/indeximage', [UserController::class, 'index']) -> name('image.index');
 
 
-//
 
-Route :: get('/profile/getUserInfo', [ProfileController::class,'getUserInfo']);
-Route :: put('/profile/editUserInfo',[ProfileController::class,'editUserInfo']);
-Route :: post('/profile/editAvatar',[ProfileController::class,'editAvatar']);
-Route :: post('/profile/editCover',[ProfileController::class,'editCover']);
-Route :: delete('/profile/delete',[ProfileController::class,'deleteUser']);
+
