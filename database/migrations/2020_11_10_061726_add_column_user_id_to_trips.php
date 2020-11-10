@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTripTable extends Migration
+class AddColumnUserIdToTrips extends Migration
 {
     /**
      * Run the migrations.
@@ -26,6 +26,8 @@ class CreateTripTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('trip');
+        Schema::table('trips', function (Blueprint $table) {
+            //
+        });
     }
 }
