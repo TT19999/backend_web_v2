@@ -16,143 +16,194 @@ use DB;
 use Hash;
 use Spatie\Searchable\Search;
 use Spatie\Searchable\ModelSearchAspect;
+use App\Http\Controllers\ErrorsController;
 
 class TripController extends Controller
 {
 
 
     public function getAllTrip(){
-        return Trip::get();
+        try{
+            $trips = Trip::get();
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
+        }
+        return response()->json([
+            'trips' => $trips,
+            'status_code' => '200',
+        ],200);
     }
 
     public function getTripById(Request $request){
-        return Trip::find($request->trip_id);
+        try{
+            $trip = Trip::find($request->trip_id);
+            
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
+        }
+        return response()->json([
+            'trip' => $trip,
+            'status_code' => '200',
+        ],200);
     }
 
     public function createTrips(Request $request){
+        $validate = Validator::make($request->all() ,[
+            'user_id' => 'required',
+            'name' => 'required|max:255',
+            'description'=> 'required',
+            'location' => 'required',
+            'duration' => 'required',
+            'departure' => 'required',
+            'price' => 'required',
+            'group_size' => 'required',
+        ]);
+        if($validate ->fails()){
+            return ErrorsController::requestError('Thông tin đăng ký không chính xác hoặc không đầy đủ');
+        }
         $user = JWTAuth :: parseToken() ->authenticate();
         if($user->can('create', Trip::class)){
+            try{
+                $trip=Trip::create([
+                    'user_id' => $user->id,
+                    'name'=>$request->name,
+                    'description'=>$request->description,
+                    'cover'=>$request->cover,
+                    'location'=>$request->location,
+                    'duration'=>$request->duration,
+                    'departure'=>$request->departure,
+                    'price'=>$request->price,
+                    'languages'=>$request->languages,
+                    'group-size'=>$request->group_size,
+                    'categories'=>$request->categories,
+                    'transportation'=>$request->transportation,
+                    'includes'=>$request->includes,
+                    'excludes'=>$request->excludes,
+                    
+                ]);
+            }catch(Illuminate\Database\QueryException $ex){
+                return ErrorsController::internalServeError();
+            }
 
-            $trip=Trip::create([
-                'user_id' => $user->id,
-                'name'=>$request->name,
-                'description'=>$request->description,
-                'cover'=>$request->cover,
-                'location'=>$request->location,
-                'duration'=>$request->duration,
-                'departure'=>$request->departure,
-                'price'=>$request->price,
-                'languages'=>$request->languages,
-                'group-size'=>$request->group_size,
-                'categories'=>$request->categories,
-                'transportation'=>$request->transportation,
-                'includes'=>$request->includes,
-                'excludes'=>$request->excludes,
-                
-            ]);
-            return \response()->json([
-                'success' => true,
-                'trips' => $trip,
-            ]);
+        }else {
+            return ErrorsController::forbiddenError();
         }
-        else return \response()->json([
-            'success' => false,
-            'message' => 'user cant create trips',
-        ]);
+        
+        
     }
 
     public function editTrips(Request $request){
         $user = JWTAuth :: parseToken() ->authenticate();
-        $trip=Trip::find($request->trip_id);
-        if($trip){
-            if($user->can('update', $trip )){
-                $trip->update($request->all());
-                return response()->json([
-                    'success' => true,
-                    'trip' => $trip
-                ]);
-            }else return response()->json([
-                'success' => false,
-                'message' => 'user cant edit trip'
-            ]);
+        try{
+            $trip=Trip::find($request->trip_id);
+            if($trip){
+                if($user->can('update', $trip )){
+                    $trip->update($request->all());
+                }else return ErrorsController::forbiddenError();
+            }
+            else return ErrorsController::requestError('Không tìm thấy tríps');
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError();
         }
-        else return response()->json([
-            'success' => false,
-            'message' => 'dont have trip'
-        ]); 
+        return response()->json([
+            'status_code' => '200',
+            'success' => true,
+            'trip' => $trip
+        ],200);
     }
 
     public function deleteTrips(Request $request){
         $user = JWTAuth :: parseToken() ->authenticate();
-        $trip=Trip::find($request->trip_id);
-        if($trip){
-            if($user->can('delete', $trip )){
-                $trip->delete();
-                return response()->json([
-                    'success' => true,
-                ]);
+        try{
+            $trip=Trip::find($request->trip_id);
+            if($trip){
+                if($user->can('delete', $trip )){
+                    $trip->delete();
+                }
+                else return ErrorsController::forbiddenError();
             }
-            else return response()->json([
-                'success' => false,
-                'message' => 'user cant delete trip'
-            ]);
+            else return ErrorsController::requestError('Không tìm thấy tríps');
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError();
         }
-        else return response()->json([
-            'success' => false,
-            'message' => 'dont have trip'
-        ]); 
+        return \response()->json([
+            'status_code' => '200',
+            'message' => 'success',
+        ],200);
     }
 
     public function getAllLocation(){
-        $location = DB::table('new_trips')->select('location')->distinct()->get();
-        return response()->json(compact('location'));
+        try{
+            $location = DB::table('new_trips')->select('location')->distinct()->get();
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError();
+        }
+        return response()->json([
+            'location'=> $location,
+            'status_code' => '200',
+        ],200);
     }
 
     public function searchTripByLocation(){
-        $searchterm = $request->input('location');
+        try{
+            $searchterm = $request->input('location');
+            $searchResults = (new Search())
+            ->registerModel(Trip::class, function (ModelSearchAspect $modelSearchAspect) {
+                $modelSearchAspect
+                    ->addExactSearchableAttribute('location');// only return results that exactly match
+            })
+            ->perform($searchterm);
 
-        $searchResults = (new Search())
-        ->registerModel(Trip::class, function (ModelSearchAspect $modelSearchAspect) {
-            $modelSearchAspect
-                ->addExactSearchableAttribute('location');// only return results that exactly match
-        })
-        ->perform($searchterm);
-
-        return \response()->json(\compact('searchResults','searchterm'));
+            return \response()->json([
+                'searchResults' => $searchResults,
+                'searchterm' => $searchterm,
+                'status_code' => '200',
+            ],200);
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError();
+        }
     }
 
     public function search(Request $request)
     {
+        try{
+            $searchterm = $request->input('query');
 
-        $searchterm = $request->input('query');
-
-        $searchResults = (new Search())
+            $searchResults = (new Search())
             ->registerModel(Trip::class, ['name', 'location'])
             ->perform($searchterm);
 
-        return \response()->json(\compact('searchResults','searchterm'));
+            return \response()->json([
+                'searchResults' => $searchResults,
+                'searchterm' => $searchterm,
+                'status_code' => '200',
+            ],200);
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError();
+        }
     }
 
 
     public function updateCover(Request $request, Trip $trip){
         $user = JWTAuth :: parseToken() ->authenticate();
-
         if($request->hasFile('cover')){
-            $fileName = time().'_'.$request->cover->getClientOriginalName();
-            $path = Storage::putFileAs('coverTrip', $request->cover,$fileName);
-            $trip ->update([
-                'cover' => $path,
-            ]);
-            return \response()->json([
+            try{
+                $fileName = time().'_'.$request->cover->getClientOriginalName();
+                $path = Storage::putFileAs('coverTrip', $request->cover,$fileName);
+                $trip ->update([
+                    'cover' => $path,
+                ]);
+                return \response()->json([
+                    'status_code' => '201',
                 'success' => true,
                 'path' => $path,
-            ]);
+                ],201);
+            }catch(Illuminate\Database\QueryException $ex){
+                return ErrorsController::internalServeError();
+            }
         }
         else {
-            return \response()->json([
-                'success' => false,
-                'message' => 'not found file'
-            ]);
+            return ErrorsController::requestError('Không có dữ liệu ảnh cover');
         }
     }
 
@@ -162,23 +213,33 @@ class TripController extends Controller
             foreach ($request->all() as $file) {
                 $fileName = time().'_'.$file->getClientOriginalName();
                 $path = Storage::putFileAs('files', $file,$fileName);
-                Image_trip::insert([
-                    'trip_id' => $trip->id,
-                    'path' => $path
-                ]);
+                try{
+                    Image_trip::insert([
+                            'trip_id' => $trip->id,
+                            'path' => $path
+                        ]);
+                }catch(Illuminate\Database\QueryException $ex){
+                    return ErrorsController::internalServeError();
+                }
             }
             return response()->json([
+                'status_code' => '201',
                 'success' => true,
-            ]);
+            ],201);
         }
-        else return response()->json([
-            'success' => false,
-        ]);
+        else return ErrorsController::forbiddenError();
     }
 
     public function getImage(Trip $trip){
-        $image_trip = Image_trip :: where('trip_id','=',$trip->id)->get();
-        return response()->json(compact('image_trip'));
+        try{
+            $image_trip = Image_trip :: where('trip_id','=',$trip->id)->get();
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError();
+        }
+        return response()->json([
+            'status_code' => '200',
+            'image_trip'=> $image_trip,
+        ],200);
     }
 }
 

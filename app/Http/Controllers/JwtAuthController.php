@@ -12,6 +12,7 @@ use Symfony\Component\Http\Foundation\Response;
 use App\Models\Role;
 use DB;
 use Hash;
+use App\Http\Controllers\ErrorsController;
  
 class JwtAuthController extends Controller
 {
@@ -21,31 +22,41 @@ class JwtAuthController extends Controller
     {
  
         $validate = Validator::make($request ->json()->all() ,[
-            'name' => 'min:2',
-            'email'=> 'string',
+            'name' => 'min:6',
+            'email'=> 'string|email',
             'password' => 'min:6'
         ]);
         if($validate ->fails()){
+            return ErrorsController::requestError('Thông tin đăng ký không đúng');
             return \response() -> json($validate->errors()->toJson(),400);
         }
-
-        $user =User::create([
+        DB::beginTransaction();
+        try{
+             $user =User::create([
             'name'=>$request->input('name'),
             'email'=>$request->input('email'),
             'password' => Hash::make($request->json()->get('password')),
-        ]);
+            ]);
 
-        $role_user =DB::table('role_user')->insert([
-            'role_id' => 3,
-            'user_id' => $user->id,
-        ]);
+            $role_user =DB::table('role_user')->insert([
+                'role_id' => 3,
+                'user_id' => $user->id,
+            ]);
         DB::table('user_info') ->insert([
             'user_id' => $user->id,
         ]);
+        DB::commit();
+        } catch (\Illuminate\Database\QueryException $ex) {
+            // dd($ex->getMessage());
+            return ErrorsController::requestError('email da duoc dang ky');
+            
+        }
+       
         $resUser= $user;
         $token = JWTAuth::fromUser($user);
         // return $role;
         return \response()->json([
+            'status_code'=>'201',
             'user' => $resUser,    
             'token' => $token,
             'role' => 'user',
@@ -58,16 +69,17 @@ class JwtAuthController extends Controller
         // return \response()->json($creadentials);
         try{
             if(! $token = JWTAuth::attempt($creadentials)){
-                return response() -> json(['error' => 'invalid_vreadentials'],400);
+                return ErrorsController::requestError('Thông tin đăng nhập sai');
             }
         }catch(JWTException $e){
-            return \response()->json(['error'=>'could_not create token'],500);
+            return ErrorsController::internalServeError('Internal Serve Error');
         }
         $user = JWTAuth::user();
         return \response()->json([
+            'status_code'=>'200',
             'token' => $token,
             'role' => $user->getRole()->first()->name,
-        ]);
+        ],200);
 
         // $input = $request->only('email', 'password');
         // $jwt_token = null;
@@ -94,36 +106,30 @@ class JwtAuthController extends Controller
             JWTAuth :: parseToken()->invalidate();
   
             return response()->json([
+                'status_code' => '200',
                 'success' => true,
                 'message' => 'User logged out successfully'
-            ]);
+            ],200);
         } catch (JWTException $exception) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Sorry, the user cannot be logged out'
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ErrorsController::internalServeError('Bạn chưa đăng nhập');
         }
     }
   
     public function getUser(Request $request)
     {
+        $user = JWTAuth :: parseToken() ->authenticate();
         try{
-            if(! $user = JWTAuth :: parseToken() ->authenticate()){
-                return response() -> json(['user_not_found'],404);
-            }
-        }catch(Tymon\JWTAuth\Exceptions\TokenExpiredException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\TokenInvalidException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
-        }catch(Tymon\JWTAuth\Exceptions\JWTException $e){
-            return response()->json(['token_invalid'],$e->getStatusCode());
+            $role = $user->getRole()->first()->name;
+            $resuser = JWTAuth::user();
+        }catch(\Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('Internal Serve Error');
         }
-        $resuser = JWTAuth::user();
         return response()->json([
+            'status_code' => '200',
             'success' => true,
             'user' => $resuser,
-            'role' => $user->getRole()->first()->name,
-        ]);
+            'role' => $role,
+        ],200);
     }
 
     public function getAllUser(){
