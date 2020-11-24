@@ -28,6 +28,7 @@ class Trip extends Model implements Searchable
         'transportation',
         'includes',
         'excludes',
+        'city'
     ];
 
     public function getSearchResult(): SearchResult
