@@ -44,6 +44,8 @@ class JwtAuthController extends Controller
             ]);
         DB::table('user_info') ->insert([
             'user_id' => $user->id,
+            'avatar' => 'avatar/avatar.jpg',
+            'cover' => 'cover/default.png'
         ]);
         DB::commit();
         } catch (\Illuminate\Database\QueryException $ex) {

@@ -24,7 +24,10 @@ class TripController extends Controller
 
     public function getAllTrip(){
         try{
-            $trips = Trip::get();
+            $trips = DB::table('new_trips')->join('users','new_trips.user_id','=','users.id')
+                        ->join('user_info', 'user_info.user_id','=','new_trips.user_id')
+                        ->select('new_trips.*', 'users.name as userName', 'user_info.avatar as userAvatar')
+                        ->get();
         }catch(Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('');
         }
@@ -37,12 +40,15 @@ class TripController extends Controller
     public function getTripById(Request $request){
         try{
             $trip = Trip::find($request->trip_id);
-            
+            $user = DB::table('users')
+                    ->join('user_info','users.id','=','user_info.user_id')
+                    ->select('users.name','user_info.avatar','users.id')->get(); 
         }catch(Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('');
         }
         return response()->json([
             'trip' => $trip,
+            'user' => $user,
             'status_code' => '200',
         ],200);
     }
@@ -81,7 +87,7 @@ class TripController extends Controller
                     'user_id' => $user->id,
                     'name'=>$request->name,
                     'description'=>$request->description,
-                    'cover'=>$request->cover,
+                    'cover'=>$request->cover ?$request->cover : 'cover/default.png',
                     'location'=>$request->location,
                     'duration'=>$request->duration,
                     'departure'=>$request->departure,
