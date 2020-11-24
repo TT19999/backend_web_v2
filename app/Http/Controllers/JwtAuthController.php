@@ -68,6 +68,7 @@ class JwtAuthController extends Controller
     public function login(Request $request)
     {
         $creadentials = $request ->json()->all();
+        
         // return \response()->json($creadentials);
         try{
             if(! $token = JWTAuth::attempt($creadentials)){

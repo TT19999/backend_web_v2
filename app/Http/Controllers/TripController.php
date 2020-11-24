@@ -76,6 +76,7 @@ class TripController extends Controller
             'departure' => 'required',
             'price' => 'required',
             'group_size' => 'required',
+            'city' =>'required',
         ]);
         if($validate ->fails()){
             return ErrorsController::requestError('Thông tin đăng ký không chính xác hoặc không đầy đủ');
@@ -98,6 +99,7 @@ class TripController extends Controller
                     'transportation'=>$request->transportation,
                     'includes'=>$request->includes,
                     'excludes'=>$request->excludes,
+                    'city' => $request->city,
                 ]);
                 return response()->json([
                     'trip' => $trip,

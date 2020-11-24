@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatCityTable extends Migration
+class CreateTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreatCityTable extends Migration
      */
     public function up()
     {
-        Schema::create('citys', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->string('path')->nullable();
+        Schema::table('new_trips', function (Blueprint $table) {
+            $table->string('city');
         });
     }
 
@@ -28,6 +25,8 @@ class CreatCityTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('citys');
+        Schema::table('new_trips', function (Blueprint $table) {
+            //
+        });
     }
 }
