@@ -14,7 +14,7 @@ class CreateTable extends Migration
     public function up()
     {
         Schema::table('new_trips', function (Blueprint $table) {
-            $table->string('city');
+            $table->string('city')->nullable();
         });
     }
 
