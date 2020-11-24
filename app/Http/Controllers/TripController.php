@@ -73,7 +73,7 @@ class TripController extends Controller
             'description'=> 'required',
             'location' => 'required',
             'duration' => 'required',
-            'departure' => 'required',
+            'departure' => 'required|date_format:h:i',
             'price' => 'required',
             'group_size' => 'required',
         ]);
@@ -83,7 +83,7 @@ class TripController extends Controller
         $user = JWTAuth :: parseToken() ->authenticate();
         if($user->can('create', Trip::class)){
             try{
-                $trip=DB::table('new_trips')->insert([
+                $trip=Trip::create([
                     'user_id' => $user->id,
                     'name'=>$request->name,
                     'description'=>$request->description,
@@ -98,7 +98,10 @@ class TripController extends Controller
                     'transportation'=>$request->transportation,
                     'includes'=>$request->includes,
                     'excludes'=>$request->excludes,
-                    
+                ]);
+                return response()->json([
+                    'trip' => $trip,
+                    'status_code' => '201',
                 ]);
             }catch(Illuminate\Database\QueryException $ex){
                 return ErrorsController::internalServeError();
@@ -108,10 +111,7 @@ class TripController extends Controller
             return ErrorsController::forbiddenError();
         }
         
-        return response()->json([
-            'trip' => $trip,
-            'status_code' => '201',
-        ]);
+        
     }
 
     public function editTrips(Request $request){
