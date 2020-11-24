@@ -73,7 +73,7 @@ class TripController extends Controller
             'description'=> 'required',
             'location' => 'required',
             'duration' => 'required',
-            'departure' => 'required|date_format:h:i',
+            'departure' => 'required',
             'price' => 'required',
             'group_size' => 'required',
         ]);
