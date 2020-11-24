@@ -257,12 +257,26 @@ class TripController extends Controller
     public function getImage(Trip $trip){
         try{
             $image_trip = Image_trip :: where('trip_id','=',$trip->id)->get();
+            return response()->json([
+            'status_code' => '200',
+            'image_trip'=> $image_trip,
+        ],200);
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError();
+        }
+        
+    }
+
+    public function getAllCity(){
+        try{
+            $city = Trip ::select('city')->get();
+
         }catch(Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError();
         }
         return response()->json([
             'status_code' => '200',
-            'image_trip'=> $image_trip,
+            'city'=>  $city,
         ],200);
     }
 }
