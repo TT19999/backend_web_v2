@@ -43,6 +43,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route :: delete('/trip/delete', [TripController::class,'deleteTrips']);
     Route :: post('/trip/updateCover/{trip}',[TripController::class,'updateCover']);
     Route :: post('/trip/addImage/{trip}',[TripController::class,'addImage']);
+    Route :: get ('/trip/user', [TripController::class, 'userTrips']);
     
 });
 Route :: get('/trip/byId', [TripController::class,'getTripById']);

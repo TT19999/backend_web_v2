@@ -47,9 +47,22 @@ class TripController extends Controller
         ],200);
     }
 
+    public function userTrips(){
+        $user = JWTAuth :: parseToken() ->authenticate();
+        try{
+            $trip = Trip::where('user_id', '=', $user->id)->get();
+            return response()->json([
+                'status_code'=> '200',
+                'trips' => $trip
+            ]);
+            
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
+        }
+    }
+
     public function createTrips(Request $request){
         $validate = Validator::make($request->all() ,[
-            'user_id' => 'required',
             'name' => 'required|max:255',
             'description'=> 'required',
             'location' => 'required',
@@ -89,7 +102,10 @@ class TripController extends Controller
             return ErrorsController::forbiddenError();
         }
         
-        
+        return response()->json([
+            'trip' => $trip,
+            'status_code' => '201',
+        ]);
     }
 
     public function editTrips(Request $request){
