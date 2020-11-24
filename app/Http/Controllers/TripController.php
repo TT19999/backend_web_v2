@@ -83,7 +83,7 @@ class TripController extends Controller
         $user = JWTAuth :: parseToken() ->authenticate();
         if($user->can('create', Trip::class)){
             try{
-                $trip=Trip::create([
+                $trip=DB::table('new_trips')->insert([
                     'user_id' => $user->id,
                     'name'=>$request->name,
                     'description'=>$request->description,
