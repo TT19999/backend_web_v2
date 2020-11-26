@@ -13,19 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('permissions')->insert([
-            [
-                'name' => 'view_trip',
-            ],
-            [
-                'name' => 'edit_trip',
-            ],
-            [
-                'name' => 'create_trip',
-            ],
-            [
-                'name' => 'delete_trip',
-            ],
+        DB::table('permission_role')->insert([
+            'permission_id' => '7',
+            'role_id' => '1'
         ]);
     }
 }
