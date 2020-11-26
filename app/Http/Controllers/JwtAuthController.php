@@ -79,7 +79,7 @@ class JwtAuthController extends Controller
             return ErrorsController::internalServeError('Internal Serve Error');
         }
         $user = JWTAuth::user();
-        $user_info=DB::table('user_info')->where('user_id','=',$user->id);
+        $user_info=DB::table('user_info')->where('user_id','=',$user->id)->get();
         return \response()->json([
             'status_code'=>'200',
             'token' => $token,
