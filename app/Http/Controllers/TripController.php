@@ -269,7 +269,7 @@ class TripController extends Controller
 
     public function getAllCity(){
         try{
-            $city = Trip ::select('city')->get();
+            $city = Trip::select('city')->distinct()->get();
 
         }catch(Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError();
