@@ -57,3 +57,4 @@ Route :: get('/trip/location', [TripController::class,'getAllLocation']);
     Route :: get('/indeximage', [UserController::class, 'index']) -> name('image.index');
 Route :: get('/trip/getImage/{trip}',[TripController::class,'getImage']);
 Route ::get('/trip/city', [TripController::class, 'getAllCity']);
+Route::get('/trip/{city}',[TripController::class, 'getAllTripInCity']);
