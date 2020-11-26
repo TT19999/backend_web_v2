@@ -279,5 +279,17 @@ class TripController extends Controller
             'city'=>  $city,
         ],200);
     }
+
+    public function getAllTripInCity(Request $request){
+        try{
+            $trip = Trip::where('city','=',$request->city)->get();
+        }catch(Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError();
+        }
+        return response()->json([
+            'status_code' => '200',
+            'trip'=>  $trip,
+        ],200);
+    }
 }
 
