@@ -17,6 +17,9 @@ class User_info extends Model
         'cover',
         'describe',
         'pay_email',
+        'avatar',
+        'cover',
+        'user_id'
     ];
     public function user()
     {

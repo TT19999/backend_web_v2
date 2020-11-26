@@ -42,7 +42,7 @@ class JwtAuthController extends Controller
                 'role_id' => 1,
                 'user_id' => $user->id,
             ]);
-        $user_info=DB::table('user_info')->insert([
+        $user_info=user_info::create([
             'user_id' => $user->id,
             'avatar' => 'avatar/avatar.jpg',
             'cover' => 'cover/default.png'
