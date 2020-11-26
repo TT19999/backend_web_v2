@@ -47,7 +47,7 @@ class JwtAuthController extends Controller
             'user_id' => $user->id,
             'avatar' => 'avatar/avatar.jpg',
             'cover' => 'cover/default.png'
-        ])->get();
+        ]);
         DB::commit();
         } catch (\Illuminate\Database\QueryException $ex) {
             // dd($ex->getMessage());
