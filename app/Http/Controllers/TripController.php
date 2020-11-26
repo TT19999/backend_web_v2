@@ -282,13 +282,13 @@ class TripController extends Controller
 
     public function getAllTripInCity(Request $request){
         try{
-            $trip = Trip::where('city','=',$request->city)->get();
+            $trips = Trip::where('city','=',$request->city)->get();
         }catch(Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError();
         }
         return response()->json([
             'status_code' => '200',
-            'trip'=>  $trip,
+            'trips'=>  $trips,
         ],200);
     }
 }

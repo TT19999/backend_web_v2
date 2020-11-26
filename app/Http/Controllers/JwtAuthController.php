@@ -42,7 +42,7 @@ class JwtAuthController extends Controller
                 'role_id' => 1,
                 'user_id' => $user->id,
             ]);
-        DB::table('user_info') ->insert([
+        $user_info=DB::table('user_info') ->insert([
             'user_id' => $user->id,
             'avatar' => 'avatar/avatar.jpg',
             'cover' => 'cover/default.png'
@@ -62,6 +62,7 @@ class JwtAuthController extends Controller
             'user' => $resUser,    
             'token' => $token,
             'role' => 'user',
+            'user_info'=>$user_info
         ],201);
     }
   
@@ -78,10 +79,12 @@ class JwtAuthController extends Controller
             return ErrorsController::internalServeError('Internal Serve Error');
         }
         $user = JWTAuth::user();
+        $user_info=DB::table('user_info')->where('user_id','=',$user->id);
         return \response()->json([
             'status_code'=>'200',
             'token' => $token,
             'role' => $user->getRole()->first()->name,
+            'user_info'=>$user_info
         ],200);
 
         // $input = $request->only('email', 'password');
