@@ -23,7 +23,7 @@ class ProfileController extends Controller
             $user = JWTAuth :: parseToken() ->authenticate();
             $data=DB::table('users')->join('user_info', 'users.id', '=','user_info.user_id')
                                 ->select('users.name','users.email','user_info.*')
-                                ->where('users.id',$user->id)->get();
+                                ->where('users.id',$user->id)->first();
             $role = $user->getRole()->first()->name;
 
         }catch(Illuminate\Database\QueryException $ex){
