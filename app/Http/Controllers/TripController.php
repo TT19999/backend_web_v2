@@ -42,7 +42,7 @@ class TripController extends Controller
             $trip = Trip::find($request->trip_id);
             $user = DB::table('users')
                     ->join('user_info','users.id','=','user_info.user_id')
-                    ->select('users.name','user_info.avatar','users.id')->get(); 
+                    ->select('users.name','user_info.avatar','users.id')->first(); 
         }catch(Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('');
         }

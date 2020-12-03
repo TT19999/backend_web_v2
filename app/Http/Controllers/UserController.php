@@ -12,6 +12,7 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\Http\Foundation\Response;
+use \Illuminate\Support\Carbon;
 use DB;
 use Hash;
 
@@ -41,4 +42,90 @@ class UserController extends Controller
         return redirect()->route('image.index');
     }
 
+    public function BecomeContributor(){
+        $user = JWTAuth :: parseToken() ->authenticate();
+        $role = $user->getRole()->first()->name;
+        if($role == "user"){
+            try{
+                if(DB::table("update_contributor")->where("user_id","=",$user->id)->exists()){
+                    return \response()->json([
+                        'status_code' => 400,
+                        'message' => "người dùng đã đăng kí",
+                    ]);
+                }
+                else {
+                    DB::table("update_contributor")->insert([
+                        "user_id"=>$user->id,
+                        "created_at" => Carbon::now(),
+                    ]);
+                    return \response()->json([
+                        "status_code" => 201,
+                        "message" => "người dùng đã được đăng kí, đợi admin xác nhận",
+                    ]);
+                }
+            }catch(\Illuminate\Database\QueryException $ex){
+                return ErrorsController::internalServeError('Internal Serve Error');
+            }
+        }
+        else {
+            return \response()->json([
+                "status_code"=> 400,
+                "message"=>"nguoi dung khong the dang ki",
+            ]);
+        }
+    }
+
+    public function GetAllRequestContributor(){
+        $user = JWTAuth :: parseToken() ->authenticate();
+        $role = $user->getRole()->first()->name;
+        if($role=="admin"){
+            try{
+                $request=DB::table('update_contributor')->get();
+                return \response()->json([
+                    "status_code"=>200,
+                    "request" => $request,
+                ]);;
+            }catch(\Illuminate\Database\QueryException $ex){
+                return ErrorsController::internalServeError('Internal Serve Error');
+            }
+        }
+        else{
+            return \response()->json([
+                "status_code"=>400,
+                "message" => "khong the xem thong tin nay",
+            ]);
+        }
+    }
+
+    public function setContributor(Request $request){
+        
+        $user = JWTAuth :: parseToken() ->authenticate();
+        $role = $user->getRole()->first()->name;
+        if($role=="admin"){
+            if($request->input('action') == "delete" ) {
+                
+                DB::table("update_contributor")->where("user_id","=",$request->user_id)->delete();
+                return \response()->json([
+                    "status_code" => 200,
+                    "message" => "da xoa",
+                ]);
+            }
+            if($request->action == "update"){
+                DB::table("role_user")->where("user_id","=",$user->id)->update([
+                    "role_id" => "3"
+                ]);
+                DB::table("update_contributor")->where("user_id","=",$request->user_id)->delete();
+                return \response()->json([
+                    "status_code" => 201,
+                    "message" => "update done",
+                ]);
+            }
+        }
+        else {
+            return response()->json([
+                "status_code" => 400,
+                "message" => "không thể thực hiện chức năng này",
+            ]);
+        }
+    }
 }

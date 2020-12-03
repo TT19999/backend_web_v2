@@ -44,6 +44,12 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route :: post('/trip/updateCover/{trip}',[TripController::class,'updateCover']);
     Route :: post('/trip/addImage/{trip}',[TripController::class,'addImage']);
     Route :: get ('/trip/user', [TripController::class, 'userTrips']);
+
+
+    //user
+    Route::post('/user/update', [UserController::class,'BecomeContributor']);
+    Route::get('/admin/getRequestUser', [UserController::class, 'GetAllRequestContributor']);
+    Route::post('/admin/updateUser',[UserController::class, 'setContributor']);
     
 });
 Route :: get('/trip/byId', [TripController::class,'getTripById']);
@@ -58,3 +64,6 @@ Route :: get('/trip/location', [TripController::class,'getAllLocation']);
 Route :: get('/trip/getImage/{trip}',[TripController::class,'getImage']);
 Route ::get('/trip/city', [TripController::class, 'getAllCity']);
 Route::get('/trip/city/{city}',[TripController::class, 'getAllTripInCity']);
+
+
+

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTable extends Migration
+class CreateTableUpdateContributorTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateTable extends Migration
      */
     public function up()
     {
-        Schema::table('new_trips', function (Blueprint $table) {
-            $table->string('city')->nullable();
+        Schema::create('update_contributor', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->foreignId("user_id")->constrained('users')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class CreateTable extends Migration
      */
     public function down()
     {
-        Schema::table('new_trips', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('update_contributor');
     }
 }
