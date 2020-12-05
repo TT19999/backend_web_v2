@@ -7,12 +7,12 @@ use App\Models\User_info;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Storage;
-use JWTAuth;
-use Validator;
 use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use DB;
-use Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\ErrorsController;
 
@@ -26,10 +26,10 @@ class ProfileController extends Controller
                                 ->where('users.id',$user->id)->first();
             $role = $user->getRole()->first()->name;
 
-        }catch(Illuminate\Database\QueryException $ex){
+        }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('Internal Serve Error',500);
         }
-        
+
         return response()->json([
             'status_code' => '200',
             'data' => $data,
@@ -51,11 +51,11 @@ class ProfileController extends Controller
             }
             else{
                 return ErrorsController::forbiddenError();
-            }   
-        }catch(Illuminate\Database\QueryException $ex){
+            }
+        }catch(\Illuminate\Database\QueryException $ex){
                 return ErrorsController::internalServeError('Internal Serve Errors');
         }
-        
+
     }
 
     public function editAvatar(Request $request){
@@ -76,11 +76,11 @@ class ProfileController extends Controller
             }else {
                 return ErrorsController::requestError('Không có dữ liệu avatar');
             }
-        }catch(Illuminate\Database\QueryException $ex){
+        }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('Internal Serve Error');
         }
-        
-        
+
+
     }
 
     public function editCover(Request $request){
@@ -102,10 +102,10 @@ class ProfileController extends Controller
             else {
                 return ErrorsController::requestError('Không có dữ liệu ảnh bìa');
             }
-        }catch(Illuminate\Database\QueryException $ex){
+        }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('Internal Serve Error');
         }
-        
+
     }
 
     public function deleteUser(Request $request){
@@ -128,11 +128,11 @@ class ProfileController extends Controller
             else {
                 return ErrorsController::requestError('Không tìm thấy User');
             }
-        }catch(Illuminate\Database\QueryException $ex){
+        }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('InternalServeError');
         }
-        
+
     }
 
-    
+
 }

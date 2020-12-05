@@ -28,7 +28,6 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route :: get('logout',[JwtAuthController::class, 'logout']);
     Route :: get('user-info', [JwtAuthController::class, 'getUser']);
 
-    
     // profile
     Route :: get('/profile/getUserInfo', [ProfileController::class,'getUserInfo']);
     Route :: put('/profile/editUserInfo',[ProfileController::class,'editUserInfo']);
@@ -58,9 +57,9 @@ Route :: post('/trip/search',[TripController::class,'search']);
 Route :: post('/trip/searchTripByLocation', [TripController::class,'searchTripByLocation']);
 Route :: get('/trip/location', [TripController::class,'getAllLocation']);
 
-    Route :: get('/check', [UserController::class, 'checkView']);
-    Route :: post('/testimage', [UserController::class, 'testImage']);
-    Route :: get('/indeximage', [UserController::class, 'index']) -> name('image.index');
+    Route :: get('/check', [UserController::class, 'checkView']); //test
+    Route :: post('/testimage', [UserController::class, 'testImage']);//test
+    Route :: get('/indeximage', [UserController::class, 'index']) -> name('image.index');//test
 Route :: get('/trip/getImage/{trip}',[TripController::class,'getImage']);
 Route ::get('/trip/city', [TripController::class, 'getAllCity']);
 Route::get('/trip/city/{city}',[TripController::class, 'getAllTripInCity']);

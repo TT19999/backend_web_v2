@@ -1,9 +1,13 @@
 <?php
- 
+
 namespace App\Http\Controllers;
- 
-use JWTAuth;
-use Validator;
+
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+
+
 use App\Models\User;
 use App\Models\User_info;
 use App\Http\Controllers\Controller;
@@ -11,17 +15,17 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\Http\Foundation\Response;
 use App\Models\Role;
-use DB;
-use Hash;
+
+
 use App\Http\Controllers\ErrorsController;
- 
+
 class JwtAuthController extends Controller
 {
     public $token = true;
-  
+
     public function register(Request $request)
     {
- 
+
         $validate = Validator::make($request ->json()->all() ,[
             'name' => 'min:6',
             'email'=> 'string|email',
@@ -52,25 +56,25 @@ class JwtAuthController extends Controller
         } catch (\Illuminate\Database\QueryException $ex) {
             // dd($ex->getMessage());
             return ErrorsController::requestError('email da duoc dang ky');
-            
+
         }
-       
+
         $resUser= $user;
         $token = JWTAuth::fromUser($user);
         // return $role;
         return \response()->json([
             'status_code'=>'201',
-            'user' => $resUser,    
+            'user' => $resUser,
             'token' => $token,
             'role' => 'user',
             'user_info'=>$user_info
         ],201);
     }
-  
+
     public function login(Request $request)
     {
         $creadentials = $request ->json()->all();
-        
+
         // return \response()->json($creadentials);
         try{
             if(! $token = JWTAuth::attempt($creadentials)){
@@ -90,7 +94,7 @@ class JwtAuthController extends Controller
 
         // $input = $request->only('email', 'password');
         // $jwt_token = null;
-  
+
         // if (!$jwt_token = JWTAuth::attempt($input)) {
         //     return response()->json([
         //         'success' => false,
@@ -106,12 +110,12 @@ class JwtAuthController extends Controller
         //     'role' => $role,
         // ]);
     }
-  
+
     public function logout(Request $request)
     {
         try {
             JWTAuth :: parseToken()->invalidate();
-  
+
             return response()->json([
                 'status_code' => '200',
                 'success' => true,
@@ -121,7 +125,7 @@ class JwtAuthController extends Controller
             return ErrorsController::internalServeError('Bạn chưa đăng nhập');
         }
     }
-  
+
     public function getUser(Request $request)
     {
         $user = JWTAuth :: parseToken() ->authenticate();

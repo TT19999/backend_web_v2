@@ -8,15 +8,16 @@ use App\Models\Role;
 use App\Models\Trip;
 use App\Models\Image_trip;
 use Illuminate\Support\Facades\Storage;
-use JWTAuth;
-use Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Hash;
 use Spatie\Searchable\Search;
 use Spatie\Searchable\ModelSearchAspect;
 use App\Http\Controllers\ErrorsController;
+
 
 class TripController extends Controller
 {
@@ -28,7 +29,7 @@ class TripController extends Controller
                         ->join('user_info', 'user_info.user_id','=','new_trips.user_id')
                         ->select('new_trips.*', 'users.name as userName', 'user_info.avatar as userAvatar')
                         ->get();
-        }catch(Illuminate\Database\QueryException $ex){
+        }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('');
         }
         return response()->json([
@@ -43,7 +44,7 @@ class TripController extends Controller
             $user = DB::table('users')
                     ->join('user_info','users.id','=','user_info.user_id')
                     ->select('users.name','user_info.avatar','users.id')->first(); 
-        }catch(Illuminate\Database\QueryException $ex){
+        }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('');
         }
         return response()->json([
@@ -62,7 +63,7 @@ class TripController extends Controller
                 'trips' => $trip
             ]);
             
-        }catch(Illuminate\Database\QueryException $ex){
+        }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('');
         }
     }
@@ -105,8 +106,8 @@ class TripController extends Controller
                     'trip' => $trip,
                     'status_code' => '201',
                 ]);
-            }catch(Illuminate\Database\QueryException $ex){
-                return ErrorsController::internalServeError();
+            }catch(\Illuminate\Database\QueryException $ex){
+                return ErrorsController::internalServeError('');
             }
 
         }else {
@@ -126,8 +127,8 @@ class TripController extends Controller
                 }else return ErrorsController::forbiddenError();
             }
             else return ErrorsController::requestError('Không tìm thấy tríps');
-        }catch(Illuminate\Database\QueryException $ex){
-            return ErrorsController::internalServeError();
+        }catch(\Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
         }
         return response()->json([
             'status_code' => '200',
@@ -147,8 +148,8 @@ class TripController extends Controller
                 else return ErrorsController::forbiddenError();
             }
             else return ErrorsController::requestError('Không tìm thấy tríps');
-        }catch(Illuminate\Database\QueryException $ex){
-            return ErrorsController::internalServeError();
+        }catch(\Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
         }
         return \response()->json([
             'status_code' => '200',
@@ -159,8 +160,8 @@ class TripController extends Controller
     public function getAllLocation(){
         try{
             $location = DB::table('new_trips')->select('location')->distinct()->get();
-        }catch(Illuminate\Database\QueryException $ex){
-            return ErrorsController::internalServeError();
+        }catch(\Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
         }
         return response()->json([
             'location'=> $location,
@@ -168,7 +169,7 @@ class TripController extends Controller
         ],200);
     }
 
-    public function searchTripByLocation(){
+    public function searchTripByLocation(Request $request){
         try{
             $searchterm = $request->input('location');
             $searchResults = (new Search())
@@ -183,8 +184,8 @@ class TripController extends Controller
                 'searchterm' => $searchterm,
                 'status_code' => '200',
             ],200);
-        }catch(Illuminate\Database\QueryException $ex){
-            return ErrorsController::internalServeError();
+        }catch(\Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
         }
     }
 
@@ -202,8 +203,8 @@ class TripController extends Controller
                 'searchterm' => $searchterm,
                 'status_code' => '200',
             ],200);
-        }catch(Illuminate\Database\QueryException $ex){
-            return ErrorsController::internalServeError();
+        }catch(\Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
         }
     }
 
@@ -222,8 +223,8 @@ class TripController extends Controller
                 'success' => true,
                 'path' => $path,
                 ],201);
-            }catch(Illuminate\Database\QueryException $ex){
-                return ErrorsController::internalServeError();
+            }catch(\Illuminate\Database\QueryException $ex){
+                return ErrorsController::internalServeError('');
             }
         }
         else {
@@ -242,8 +243,8 @@ class TripController extends Controller
                             'trip_id' => $trip->id,
                             'path' => $path
                         ]);
-                }catch(Illuminate\Database\QueryException $ex){
-                    return ErrorsController::internalServeError();
+                }catch(\Illuminate\Database\QueryException $ex){
+                    return ErrorsController::internalServeError('');
                 }
             }
             return response()->json([
@@ -261,8 +262,8 @@ class TripController extends Controller
             'status_code' => '200',
             'image_trip'=> $image_trip,
         ],200);
-        }catch(Illuminate\Database\QueryException $ex){
-            return ErrorsController::internalServeError();
+        }catch(\Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
         }
         
     }
@@ -271,8 +272,8 @@ class TripController extends Controller
         try{
             $city = Trip::select('city')->distinct()->get();
 
-        }catch(Illuminate\Database\QueryException $ex){
-            return ErrorsController::internalServeError();
+        }catch(\Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
         }
         return response()->json([
             'status_code' => '200',
@@ -283,8 +284,8 @@ class TripController extends Controller
     public function getAllTripInCity(Request $request){
         try{
             $trips = Trip::where('city','=',$request->city)->get();
-        }catch(Illuminate\Database\QueryException $ex){
-            return ErrorsController::internalServeError();
+        }catch(\Illuminate\Database\QueryException $ex){
+            return ErrorsController::internalServeError('');
         }
         return response()->json([
             'status_code' => '200',
