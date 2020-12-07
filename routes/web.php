@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\MailController;
+use App\Mail\HelloWorldMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +17,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    Mail::to('tunghust99@gmail.com')->send(new HelloWorldMail());
     return view('welcome');
 });
+
+Route::get('/sendEmail' , [MailController::class, 'order']);
