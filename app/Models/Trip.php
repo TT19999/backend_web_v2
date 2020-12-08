@@ -23,7 +23,7 @@ class Trip extends Model implements Searchable
         'departure',
         'price',
         'languages',
-        'group-size',
+        'group_size',
         'categories',
         'transportation',
         'includes',
