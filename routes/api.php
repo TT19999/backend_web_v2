@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JwtAuthController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TripController;
@@ -49,8 +50,13 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('/user/update', [UserController::class,'BecomeContributor']);
     Route::get('/admin/getRequestUser', [UserController::class, 'GetAllRequestContributor']);
     Route::post('/admin/updateUser',[UserController::class, 'setContributor']);
+
     
 });
+
+    Route::get('/order',[OrderController::class,'index']);
+Route::post('/order/create',[OrderController::class,'create']);
+
 Route :: get('/trip/byId', [TripController::class,'getTripById']);
 Route :: get('/trip', [TripController::class,'getAllTrip']);
 Route :: post('/trip/search',[TripController::class,'search']);

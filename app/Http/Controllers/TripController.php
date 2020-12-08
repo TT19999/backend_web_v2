@@ -95,7 +95,7 @@ class TripController extends Controller
                     'departure'=>$request->departure,
                     'price'=>$request->price,
                     'languages'=>$request->languages,
-                    'group-size'=>$request->group_size,
+                    'group_size'=>$request->group_size,
                     'categories'=>$request->categories,
                     'transportation'=>$request->transportation,
                     'includes'=>$request->includes,

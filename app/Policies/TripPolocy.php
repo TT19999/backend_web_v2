@@ -77,7 +77,7 @@ class TripPolocy
      */
     public function restore(User $user, Trip $trip)
     {
-        return (($user->hasPermission('restore_trip') || ($user->id == $trips->user_id)));
+        return (($user->hasPermission('restore_trip') || ($user->id == $trip->user_id)));
     }
 
     /**
