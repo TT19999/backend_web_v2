@@ -57,7 +57,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('/order/show',[OrderController::class,'show']);
 });
 
-    
+    Route::get('/delete/{user}',[UserController::class,'deleteUser']);
 
 
 Route :: get('/trip/byId', [TripController::class,'getTripById']);

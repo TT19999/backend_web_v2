@@ -7,14 +7,16 @@ use App\Models\User_info;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Storage;
-use JWTAuth;
+
 use Validator;
 use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\Http\Foundation\Response;
 use \Illuminate\Support\Carbon;
-use DB;
+
 use Hash;
+use Illuminate\Support\Facades\DB ;
+use Tymon\JWTAuth\Facades\JWTAuth ;
 
 class UserController extends Controller
 {
@@ -127,5 +129,12 @@ class UserController extends Controller
                 "message" => "không thể thực hiện chức năng này",
             ]);
         }
+    }
+
+    public function deleteUser(User $user){
+        $user->delete();
+        return response()->json([
+            'succes'=>'true',
+        ]);
     }
 }
