@@ -127,14 +127,14 @@
                                 <h5>Client details</h5>
                                 {{$user->name}}<br>
                                 {{$user->email}}<br>
-                                Phone
+                                {{$user_info->phone}}
                             </td>
                             
                             <td>
                                 <h5>Owner's Trip</h5>
                                 {{$owner->name}}<br>
                                 {{$owner->email}}<br>
-                                Phone
+                                {{$owner_info->phone}}
                             </td>
                         </tr>
                     </table>

@@ -39,5 +39,5 @@ Route::get('/sendEmail' , [MailController::class, 'order']);
 
 Route::get('/notify',function(){
     $user=User::find(40);
-    $user->notify(new InvoicePaid());
+    
 });

@@ -2,34 +2,23 @@
 
 namespace App\Notifications;
 
-use App\Models\User_info;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class InvoicePaid extends Notification
+class orderPaid extends Notification
 {
     use Queueable;
-    public $user;
-    public $trip;
-    public $owner;
-    public $order;
-    public $user_info;
-    public $owner_info;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($trip , $user, $owner, $order)
+    public function __construct()
     {
-        $this->trip=$trip;
-        $this->user=$user;
-        $this->owner=$owner;
-        $this->order=$order;
-        $this->user_info=User_info::where('user_id','=',$user->id)->first();
-        $this->owner_info=User_info::where('user_id','=',$owner->id)->first();
+        //
     }
 
     /**
@@ -51,7 +40,10 @@ class InvoicePaid extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->view('emails.order',['order'=> $this->order,'user'=>$this->user,'owner'=>$this->owner,'trip'=>$this->trip,'user_info'=>$this->user_info,'owner_info'=>$this->owner_info]);
+        return (new MailMessage)
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**

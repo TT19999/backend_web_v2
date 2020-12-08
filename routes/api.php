@@ -51,11 +51,14 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('/admin/getRequestUser', [UserController::class, 'GetAllRequestContributor']);
     Route::post('/admin/updateUser',[UserController::class, 'setContributor']);
 
-    
+    //order
+    Route::post('/order/create/{trip}',[OrderController::class,'create']);
+    Route::get('/order',[OrderController::class,'index']);
+    Route::get('/order/show',[OrderController::class,'show']);
 });
 
-    Route::get('/order',[OrderController::class,'index']);
-Route::post('/order/create',[OrderController::class,'create']);
+    
+
 
 Route :: get('/trip/byId', [TripController::class,'getTripById']);
 Route :: get('/trip', [TripController::class,'getAllTrip']);
