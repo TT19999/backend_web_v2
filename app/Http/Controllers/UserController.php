@@ -16,6 +16,7 @@ use \Illuminate\Support\Carbon;
 
 use Hash;
 use Illuminate\Support\Facades\DB ;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
 use Tymon\JWTAuth\Facades\JWTAuth ;
 
 class UserController extends Controller
@@ -44,7 +45,16 @@ class UserController extends Controller
         return redirect()->route('image.index');
     }
 
-    public function BecomeContributor(){
+    public function BecomeContributor(Request $request){
+        $validate = FacadesValidator::make($request->all() ,[
+            'address'=> 'required',
+            'intro'=>'required',
+            'languages' => 'required',
+            'experiences' => 'required',
+        ]);
+        if($validate ->fails()){
+            return ErrorsController::requestError('data is not enough or error');
+        }
         $user = JWTAuth :: parseToken() ->authenticate();
         $role = $user->getRole()->first()->name;
         if($role == "user"){
@@ -58,11 +68,15 @@ class UserController extends Controller
                 else {
                     DB::table("update_contributor")->insert([
                         "user_id"=>$user->id,
+                        "intro"=>$request->intro,
+                        "languages"=>$request->languages,
+                        "address"=>$request->address,
+                        "experiences"=>$request->experiences,
                         "created_at" => Carbon::now(),
                     ]);
                     return \response()->json([
                         "status_code" => 201,
-                        "message" => "you are sign up, wait for admin",
+                        "message" => "your data is send, wait for admin",
                     ]);
                 }
             }catch(\Illuminate\Database\QueryException $ex){
@@ -104,7 +118,7 @@ class UserController extends Controller
         $user = JWTAuth :: parseToken() ->authenticate();
         $role = $user->getRole()->first()->name;
         if($role=="admin"){
-            if($request->input('action') == "delete" ) {
+            if($request->action == "delete" ) {
                 
                 DB::table("update_contributor")->where("user_id","=",$request->user_id)->delete();
                 return \response()->json([
@@ -113,7 +127,7 @@ class UserController extends Controller
                 ]);
             }
             if($request->action == "update"){
-                DB::table("role_user")->where("user_id","=",$user->id)->update([
+                DB::table("role_user")->where("user_id","=",$request->user_id)->update([
                     "role_id" => "3"
                 ]);
                 DB::table("update_contributor")->where("user_id","=",$request->user_id)->delete();
