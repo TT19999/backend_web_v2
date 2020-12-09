@@ -45,6 +45,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route :: post('/trip/addImage/{trip}',[TripController::class,'addImage']);
     Route :: get ('/trip/user', [TripController::class, 'userTrips']);
 
+    
 
     //user
     Route::post('/user/update', [UserController::class,'BecomeContributor']);

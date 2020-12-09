@@ -32,7 +32,7 @@ class JwtAuthController extends Controller
             'password' => 'min:6'
         ]);
         if($validate ->fails()){
-            return ErrorsController::requestError('Thông tin đăng ký không đúng');
+            return ErrorsController::requestError('data is wrong');
             return \response() -> json($validate->errors()->toJson(),400);
         }
         DB::beginTransaction();
