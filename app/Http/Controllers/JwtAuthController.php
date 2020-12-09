@@ -27,7 +27,7 @@ class JwtAuthController extends Controller
     {
 
         $validate = Validator::make($request ->json()->all() ,[
-            'name' => 'min:6',
+            'name' => 'min:1',
             'email'=> 'string|email',
             'password' => 'min:6'
         ]);
