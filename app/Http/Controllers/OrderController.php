@@ -12,6 +12,7 @@ use Aws\CodeStarNotifications\Exception\CodeStarNotificationsException;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Swift_TransportException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -43,6 +44,14 @@ class OrderController extends Controller
     }
 
     public function create(Request $request,$id){
+
+        $validate = Validator::make($request->all() ,[
+            'date' => 'required',
+            'participants'=> 'required',
+        ]);
+        if($validate ->fails()){
+            return ErrorsController::requestError('data is not enough or error');
+        }
         $trip=Trip::find($id);
         if($trip==null){
             return \response()->json([
