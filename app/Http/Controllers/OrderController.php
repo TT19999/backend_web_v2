@@ -8,9 +8,11 @@ use App\Models\Order;
 use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\InvoicePaid;
+use Aws\CodeStarNotifications\Exception\CodeStarNotificationsException;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Swift_TransportException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 
@@ -59,8 +61,19 @@ class OrderController extends Controller
             'trip_id'=>$trip->id,
             'participants'=>$request->participants
         ]);
-        $user->notify(new InvoicePaid($trip,$user, $owner, $order));
-        $owner->notify(new InvoicePaid($trip,$user, $owner, $order));
+        try{
+            $user->notify(new InvoicePaid($trip,$user, $owner, $order));
+            $owner->notify(new InvoicePaid($trip,$user, $owner, $order));
+        }catch(Swift_TransportException $a ){
+            return \response()->json(
+                [
+                    'status_code'=>201,
+                    'order'=>$order,
+                    'email'=>'email se dc admin gui den sau'
+                ],201
+            ); 
+        }
+        
         // Mail::to('tuntun9xbaby@gmail.com')->send(new HelloWorldMail($trip));
 
         return \response()->json(
