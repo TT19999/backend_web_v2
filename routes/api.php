@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JwtAuthController;
@@ -45,7 +47,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route :: post('/trip/addImage/{trip}',[TripController::class,'addImage']);
     Route :: get ('/trip/user', [TripController::class, 'userTrips']);
 
-    
+
 
     //user
     Route::post('/user/update', [UserController::class,'BecomeContributor']);
@@ -56,8 +58,17 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('/order/create/{trip}',[OrderController::class,'create']);
     Route::get('/order',[OrderController::class,'index']);
     Route::get('/order/show',[OrderController::class,'show']);
-});
 
+    //comments
+    Route::post('/comment/create/{trip}',[CommentController::class,'create']);
+    Route::delete('/comment/delete/{comment}',[CommentController::class,'delete']);
+    Route::get('/comment/user',[CommentController::class,'userIndex']);
+
+    Route::get('/contact/index',[ContactController::class,'index']);
+    Route::delete('/contact/delete/{id}',[ContactController::class,'delete']);
+});
+    Route::post('/contact/create',[ContactController::class,'create']);
+    Route::get('/comment/trip/{trip}',[CommentController::class,'index']);
     Route::get('/delete/{user}',[UserController::class,'deleteUser']);
 
 
