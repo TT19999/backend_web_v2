@@ -78,7 +78,7 @@ class JwtAuthController extends Controller
         // return \response()->json($creadentials);
         try{
             if(! $token = JWTAuth::attempt($creadentials)){
-                return ErrorsController::requestError('Thông tin đăng nhập sai');
+                return ErrorsController::requestError('Auth Fail!!');
             }
         }catch(JWTException $e){
             return ErrorsController::internalServeError('Internal Serve Error');
@@ -122,7 +122,7 @@ class JwtAuthController extends Controller
                 'message' => 'User logged out successfully'
             ],200);
         } catch (JWTException $exception) {
-            return ErrorsController::internalServeError('Bạn chưa đăng nhập');
+            return ErrorsController::internalServeError('not auth');
         }
     }
 

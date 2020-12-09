@@ -80,7 +80,7 @@ class TripController extends Controller
             'city' =>'required',
         ]);
         if($validate ->fails()){
-            return ErrorsController::requestError('Thông tin đăng ký không chính xác hoặc không đầy đủ');
+            return ErrorsController::requestError('data is not enough or error');
         }
         $user = JWTAuth :: parseToken() ->authenticate();
         if($user->can('create', Trip::class)){
@@ -126,7 +126,7 @@ class TripController extends Controller
                     $trip->update($request->all());
                 }else return ErrorsController::forbiddenError();
             }
-            else return ErrorsController::requestError('Không tìm thấy tríps');
+            else return ErrorsController::requestError('not has trip');
         }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('');
         }
@@ -147,7 +147,7 @@ class TripController extends Controller
                 }
                 else return ErrorsController::forbiddenError();
             }
-            else return ErrorsController::requestError('Không tìm thấy tríps');
+            else return ErrorsController::requestError('not has trip');
         }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('');
         }
@@ -228,7 +228,7 @@ class TripController extends Controller
             }
         }
         else {
-            return ErrorsController::requestError('Không có dữ liệu ảnh cover');
+            return ErrorsController::requestError('not has cover');
         }
     }
 

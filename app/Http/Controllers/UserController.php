@@ -52,7 +52,7 @@ class UserController extends Controller
                 if(DB::table("update_contributor")->where("user_id","=",$user->id)->exists()){
                     return \response()->json([
                         'status_code' => 400,
-                        'message' => "người dùng đã đăng kí",
+                        'message' => "you are sign up",
                     ]);
                 }
                 else {
@@ -62,7 +62,7 @@ class UserController extends Controller
                     ]);
                     return \response()->json([
                         "status_code" => 201,
-                        "message" => "người dùng đã được đăng kí, đợi admin xác nhận",
+                        "message" => "you are sign up, wait for admin",
                     ]);
                 }
             }catch(\Illuminate\Database\QueryException $ex){
@@ -126,7 +126,7 @@ class UserController extends Controller
         else {
             return response()->json([
                 "status_code" => 400,
-                "message" => "không thể thực hiện chức năng này",
+                "message" => "you can not do this action",
             ]);
         }
     }

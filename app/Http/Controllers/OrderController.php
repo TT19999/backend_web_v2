@@ -35,7 +35,7 @@ class OrderController extends Controller
         else {
             return response()->json([
                 "status_code" => 400,
-                "message" => "không thể thực hiện chức năng này",
+                "message" => "Can not do this action",
             ]);
         }
     }
