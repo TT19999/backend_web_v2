@@ -40,10 +40,18 @@ class OrderController extends Controller
         }
     }
 
-    public function create(Request $request, Trip $trip){
-       
+    public function create(Request $request,$id){
+        $trip=Trip::find($id);
+        if($trip==null){
+            return \response()->json([
+                'status_code'=> 400,
+                'message'=>'khong tim thay trip',
+            ],400);
+        }
         $user = JWTAuth :: parseToken() ->authenticate();
         $owner= User::find($trip->user_id);
+        
+        
         $order=Order::create([
             'user_id'=>$user->id,
             'owner_id'=>$owner->id,

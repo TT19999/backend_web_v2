@@ -55,7 +55,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('/admin/updateUser',[UserController::class, 'setContributor']);
 
     //order
-    Route::post('/order/create/{trip}',[OrderController::class,'create']);
+    Route::post('/order/create/{id}',[OrderController::class,'create']);
     Route::get('/order',[OrderController::class,'index']);
     Route::get('/order/show',[OrderController::class,'show']);
 
