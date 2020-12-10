@@ -146,4 +146,39 @@ class JwtAuthController extends Controller
     public function getAllUser(){
         return User::get();
     }
+
+    public function resetPassword(Request $request){
+        $validate = Validator::make($request ->json()->all() ,[
+            'new_password' => 'required|min:6',
+            'old_password' => 'required'
+        ]);
+        if($validate ->fails()){
+            return ErrorsController::requestError('data is wrong');
+            return \response() -> json($validate->errors()->toJson(),400);
+        }
+
+        $user = JWTAuth :: parseToken() ->authenticate();
+        if(!(Hash::check($request->get('old_password'), $user->password))){
+            return \response()->json([
+                'status_code' => 400,
+                'message' => 'mat khau cu khong chinh xacs'
+            ],400);
+        }
+
+        if(strcmp($request->get('old_password'), $request->get('new_password')) == 0){
+            return response()->json([
+                'status_code' => 400,
+                'message' => 'mat khau moi khong duoc trung voi mat khau cu'
+            ],400);
+        }
+
+        $user->password = Hash::make($request->json()->get('new_password'));
+        $user->save();
+
+        return response()->json([
+            'status_code'=>201,
+            'message' => 'mat khau thay doi thanh cong'
+        ],201);
+
+    }
 }

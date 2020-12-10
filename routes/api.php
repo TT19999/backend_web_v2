@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
  
     Route :: get('logout',[JwtAuthController::class, 'logout']);
     Route :: get('user-info', [JwtAuthController::class, 'getUser']);
+    Route :: post('/reset-password', [JwtAuthController::class,'resetPassword']);
 
     // profile
     Route :: get('/profile/getUserInfo', [ProfileController::class,'getUserInfo']);
