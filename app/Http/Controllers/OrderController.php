@@ -62,7 +62,6 @@ class OrderController extends Controller
         $user = JWTAuth :: parseToken() ->authenticate();
         $owner= User::find($trip->user_id);
         
-        
         $order=Order::create([
             'user_id'=>$user->id,
             'owner_id'=>$owner->id,
@@ -105,4 +104,6 @@ class OrderController extends Controller
             'order'=>$order,
         ],200);
     }
+
+    
 }

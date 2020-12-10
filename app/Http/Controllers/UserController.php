@@ -151,4 +151,11 @@ class UserController extends Controller
             'succes'=>'true',
         ]);
     }
+
+    public function getNotification(){
+        $user = JWTAuth :: parseToken() ->authenticate();
+        return \response()->json([
+            'notifications'=> $user->notifications,
+        ],200);
+    }
 }

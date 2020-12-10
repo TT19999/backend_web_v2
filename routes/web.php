@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\UserController;
 use App\Mail\HelloWorldMail;
 use App\Mail\Order;
 use App\Models\Order as ModelsOrder;
@@ -37,7 +38,4 @@ Route::get('/', function () {
 
 Route::get('/sendEmail' , [MailController::class, 'order']);
 
-Route::get('/notify',function(){
-    $user=User::find(40);
-    
-});
+Route::get('/notify',[UserController::class,'getNotification']);

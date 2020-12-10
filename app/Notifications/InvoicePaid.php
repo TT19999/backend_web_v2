@@ -40,7 +40,8 @@ class InvoicePaid extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail','database'];
+        // 'mail',
     }
 
     /**
@@ -62,8 +63,14 @@ class InvoicePaid extends Notification
      */
     public function toArray($notifiable)
     {
+        if($notifiable->id == $this->owner->id){
+            $array= 'Trip: '. $this->trip->name . ' da duoc dat boi ' .$this->user->name. ' vui long xem chi tiet trong email';
+        }
+        else $array= 'ban da dat thanh cong Trip: '.$this->trip->name.' cua '.$this->owner->name . ', ban vui long xem chi tiet trong email';
         return [
-            //
+            $array
         ];
     }
+
+    
 }
