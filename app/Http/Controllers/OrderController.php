@@ -70,7 +70,10 @@ class OrderController extends Controller
             'trip_id'=>$trip->id,
             'participants'=>$request->participants
         ]);
+
+        
         try{
+
             $user->notify(new InvoicePaid($trip,$user, $owner, $order));
             $owner->notify(new InvoicePaid($trip,$user, $owner, $order));
         }catch(Swift_TransportException $a ){
