@@ -178,7 +178,7 @@ class TripController extends Controller
                     ->addExactSearchableAttribute('location');// only return results that exactly match
             })
             ->perform($searchterm);
-
+ 
             return \response()->json([
                 'searchResults' => $searchResults,
                 'searchterm' => $searchterm,
@@ -194,12 +194,15 @@ class TripController extends Controller
         try{
             $searchterm = $request->input('query');
 
-            $searchResults = (new Search())
-            ->registerModel(Trip::class, ['name', 'location'])
-            ->perform($searchterm);
+            $trips = DB::table('new_trips')->join('users','new_trips.user_id','=','users.id')
+                        ->join('user_info', 'user_info.user_id','=','new_trips.user_id')
+                        ->select('new_trips.*', 'users.name as userName', 'user_info.avatar as userAvatar')
+                        ->where('new_trips.name','like','%'.$searchterm.'%')
+                        ->orWhere('new_trips.location','like','%'.$searchterm.'%')
+                        ->get();
 
             return \response()->json([
-                'searchResults' => $searchResults,
+                'trips' => $trips,
                 'searchterm' => $searchterm,
                 'status_code' => '200',
             ],200);
