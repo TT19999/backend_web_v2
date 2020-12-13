@@ -91,6 +91,22 @@ class UserController extends Controller
         }
     }
 
+    public function getAllUser(){
+        $user=User::join('user_info','users.id','=','user_info.user_id')->get();
+        return response()->json([
+            'users'=>$user,
+            'status_code'=>200,
+        ],200);
+    }
+
+    public function getUser(Request $request){
+        $user= User::join('user_info','users.id','=','user_info.user_id')->where('users.id','=',$request->user_id)->first();
+        return \response()->json([
+            'user'=>$user,
+            'status_code'=>200,
+        ],200);
+    }
+
     public function GetAllRequestContributor(){
         $user = JWTAuth :: parseToken() ->authenticate();
         $role = $user->getRole()->first()->name;

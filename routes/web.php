@@ -9,6 +9,7 @@ use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\InvoicePaid;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
@@ -25,15 +26,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-   $array = [];
-   $trip=Trip::find(6);
-   $array=$trip;
-   $user=User::find($trip->user_id);
-   $owner=User::find(3);
-   $order=ModelsOrder::find(1);
-   Mail::to('tunghust99@gmail.com')->send(new Order($trip,$user,$owner,$order));
+    $order= DB::table('orders')->where('date','<',now())->get();
+    return response()->json($order);
 
-    return view('emails.order',['trip'=>$trip, 'user'=>$user,'owner'=>$owner,'order'=>$order]);
 });
 
 Route::get('/sendEmail' , [MailController::class, 'order']);

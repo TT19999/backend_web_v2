@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c8e1281-c0ea-40c3-b00c-772b37045db9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/Policies/TripPolocy.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Policies/TripPolocy.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_12_03_042655_create_table_update_contributor_table.php" beforeDir="false" />
-    </list>
+    <list default="true" id="2c8e1281-c0ea-40c3-b00c-772b37045db9" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -161,7 +158,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../KaoipizProject2" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -181,6 +178,7 @@
       <updated>1607365274223</updated>
       <workItem from="1607365307878" duration="479000" />
       <workItem from="1607398807728" duration="1972000" />
+      <workItem from="1607735994380" duration="59000" />
     </task>
     <servers />
   </component>
@@ -197,5 +195,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

@@ -9,6 +9,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TripController;
+use App\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -50,11 +52,13 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
 
 
-    //user
+    //user 
     Route::post('/user/update', [UserController::class,'BecomeContributor']);
     Route::get('/admin/getRequestUser', [UserController::class, 'GetAllRequestContributor']);
     Route::post('/admin/updateUser',[UserController::class, 'setContributor']);
     Route::get('/notify',[UserController::class,'getNotification']);
+    Route::get('/admin/allUser',[UserController::class,'getAllUser']);
+    Route::get('/admin/user',[UserController::class,'getUser']);
 
     //order
     Route::post('/order/create/{id}',[OrderController::class,'create']);
@@ -68,6 +72,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
     Route::get('/contact/index',[ContactController::class,'index']);
     Route::delete('/contact/delete/{id}',[ContactController::class,'delete']);
+
+    
 });
     Route::post('/contact/create',[ContactController::class,'create']);
     Route::get('/comment/trip/{trip}',[CommentController::class,'index']);
