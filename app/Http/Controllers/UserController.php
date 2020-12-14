@@ -92,18 +92,23 @@ class UserController extends Controller
     }
 
     public function getAllUser(){
-        $user=User::join('user_info','users.id','=','user_info.user_id')->get();
+        $users=User::join('user_info','users.id','=','user_info.user_id')->get();
+        foreach($users as $user){
+            $user->role = $user->getRole()->first()->name;
+        } 
         return response()->json([
-            'users'=>$user,
+            'users'=>$users,
             'status_code'=>200,
         ],200);
     }
 
     public function getUser(Request $request){
         $user= User::join('user_info','users.id','=','user_info.user_id')->where('users.id','=',$request->user_id)->first();
+        $role = $user->getRole()->first()->name;
         return \response()->json([
             'user'=>$user,
             'status_code'=>200,
+            'role'=>$role,
         ],200);
     }
 
