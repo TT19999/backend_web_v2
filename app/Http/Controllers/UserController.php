@@ -94,7 +94,7 @@ class UserController extends Controller
     public function getAllUser(){
         $users=User::join('user_info','users.id','=','user_info.user_id')->get();
         foreach($users as $user){
-            $user->role = $user->getRole()->first()->name;
+            $user->role = DB::table('role_user')->where('user_id','=',$user->id)->first();
         } 
         return response()->json([
             'users'=>$users,
@@ -104,11 +104,11 @@ class UserController extends Controller
 
     public function getUser(Request $request){
         $user= User::join('user_info','users.id','=','user_info.user_id')->where('users.id','=',$request->user_id)->first();
-        $role = $user->getRole()->first()->name;
+        $user->role = DB::table('role_user')->where('user_id','=',$user->id)->first();
         return \response()->json([
             'user'=>$user,
             'status_code'=>200,
-            'role'=>$role,
+            
         ],200);
     }
 
