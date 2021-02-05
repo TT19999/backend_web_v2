@@ -11,14 +11,24 @@ class Order extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $trip;
+    public $user;
+    public $owner;
+    public $order;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+
+
+    public function __construct($trip , $user,$owner,$order)
     {
-        //
+        $this->trip=$trip;
+        $this->user=$user;
+        $this->owner=$owner;
+        $this->order=$order;
     }
 
     /**
@@ -28,7 +38,6 @@ class Order extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.order')
-        ->with(['orderName' => $this->order->name, 'orderPrice' => $this->order->id]);
+        return $this->view('emails.order');
     }
 }

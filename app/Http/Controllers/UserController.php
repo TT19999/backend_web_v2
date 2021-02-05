@@ -7,14 +7,17 @@ use App\Models\User_info;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Storage;
-use JWTAuth;
+
 use Validator;
 use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\Http\Foundation\Response;
 use \Illuminate\Support\Carbon;
-use DB;
+
 use Hash;
+use Illuminate\Support\Facades\DB ;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
+use Tymon\JWTAuth\Facades\JWTAuth ;
 
 class UserController extends Controller
 {
@@ -42,7 +45,16 @@ class UserController extends Controller
         return redirect()->route('image.index');
     }
 
-    public function BecomeContributor(){
+    public function BecomeContributor(Request $request){
+        $validate = FacadesValidator::make($request->all() ,[
+            'address'=> 'required',
+            'intro'=>'required',
+            'languages' => 'required',
+            'experiences' => 'required',
+        ]);
+        if($validate ->fails()){
+            return ErrorsController::requestError('data is not enough or error');
+        }
         $user = JWTAuth :: parseToken() ->authenticate();
         $role = $user->getRole()->first()->name;
         if($role == "user"){
@@ -50,17 +62,21 @@ class UserController extends Controller
                 if(DB::table("update_contributor")->where("user_id","=",$user->id)->exists()){
                     return \response()->json([
                         'status_code' => 400,
-                        'message' => "người dùng đã đăng kí",
+                        'message' => "you are sign up",
                     ]);
                 }
                 else {
                     DB::table("update_contributor")->insert([
                         "user_id"=>$user->id,
+                        "intro"=>$request->intro,
+                        "languages"=>$request->languages,
+                        "address"=>$request->address,
+                        "experiences"=>$request->experiences,
                         "created_at" => Carbon::now(),
                     ]);
                     return \response()->json([
                         "status_code" => 201,
-                        "message" => "người dùng đã được đăng kí, đợi admin xác nhận",
+                        "message" => "your data is send, wait for admin",
                     ]);
                 }
             }catch(\Illuminate\Database\QueryException $ex){
@@ -73,6 +89,27 @@ class UserController extends Controller
                 "message"=>"nguoi dung khong the dang ki",
             ]);
         }
+    }
+
+    public function getAllUser(){
+        $users=User::join('user_info','users.id','=','user_info.user_id')->get();
+        foreach($users as $user){
+            $user->role = DB::table('role_user')->where('user_id','=',$user->id)->first();
+        } 
+        return response()->json([
+            'users'=>$users,
+            'status_code'=>200,
+        ],200);
+    }
+
+    public function getUser(Request $request){
+        $user= User::join('user_info','users.id','=','user_info.user_id')->where('users.id','=',$request->user_id)->first();
+        $user->role = DB::table('role_user')->where('user_id','=',$user->id)->first();
+        return \response()->json([
+            'user'=>$user,
+            'status_code'=>200,
+            
+        ],200);
     }
 
     public function GetAllRequestContributor(){
@@ -102,7 +139,7 @@ class UserController extends Controller
         $user = JWTAuth :: parseToken() ->authenticate();
         $role = $user->getRole()->first()->name;
         if($role=="admin"){
-            if($request->input('action') == "delete" ) {
+            if($request->action == "delete" ) {
                 
                 DB::table("update_contributor")->where("user_id","=",$request->user_id)->delete();
                 return \response()->json([
@@ -111,7 +148,7 @@ class UserController extends Controller
                 ]);
             }
             if($request->action == "update"){
-                DB::table("role_user")->where("user_id","=",$user->id)->update([
+                DB::table("role_user")->where("user_id","=",$request->user_id)->update([
                     "role_id" => "3"
                 ]);
                 DB::table("update_contributor")->where("user_id","=",$request->user_id)->delete();
@@ -124,8 +161,22 @@ class UserController extends Controller
         else {
             return response()->json([
                 "status_code" => 400,
-                "message" => "không thể thực hiện chức năng này",
+                "message" => "you can not do this action",
             ]);
         }
+    }
+
+    public function deleteUser(User $user){
+        $user->delete();
+        return response()->json([
+            'succes'=>'true',
+        ]);
+    }
+
+    public function getNotification(){
+        $user = JWTAuth :: parseToken() ->authenticate();
+        return \response()->json([
+            'notifications'=> $user->notifications,
+        ],200);
     }
 }

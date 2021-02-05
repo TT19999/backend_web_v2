@@ -80,7 +80,7 @@ class TripController extends Controller
             'city' =>'required',
         ]);
         if($validate ->fails()){
-            return ErrorsController::requestError('Thông tin đăng ký không chính xác hoặc không đầy đủ');
+            return ErrorsController::requestError('data is not enough or error');
         }
         $user = JWTAuth :: parseToken() ->authenticate();
         if($user->can('create', Trip::class)){
@@ -95,7 +95,7 @@ class TripController extends Controller
                     'departure'=>$request->departure,
                     'price'=>$request->price,
                     'languages'=>$request->languages,
-                    'group-size'=>$request->group_size,
+                    'group_size'=>$request->group_size,
                     'categories'=>$request->categories,
                     'transportation'=>$request->transportation,
                     'includes'=>$request->includes,
@@ -126,7 +126,7 @@ class TripController extends Controller
                     $trip->update($request->all());
                 }else return ErrorsController::forbiddenError();
             }
-            else return ErrorsController::requestError('Không tìm thấy tríps');
+            else return ErrorsController::requestError('not has trip');
         }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('');
         }
@@ -147,7 +147,7 @@ class TripController extends Controller
                 }
                 else return ErrorsController::forbiddenError();
             }
-            else return ErrorsController::requestError('Không tìm thấy tríps');
+            else return ErrorsController::requestError('not has trip');
         }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('');
         }
@@ -178,7 +178,7 @@ class TripController extends Controller
                     ->addExactSearchableAttribute('location');// only return results that exactly match
             })
             ->perform($searchterm);
-
+ 
             return \response()->json([
                 'searchResults' => $searchResults,
                 'searchterm' => $searchterm,
@@ -194,12 +194,15 @@ class TripController extends Controller
         try{
             $searchterm = $request->input('query');
 
-            $searchResults = (new Search())
-            ->registerModel(Trip::class, ['name', 'location'])
-            ->perform($searchterm);
+            $trips = DB::table('new_trips')->join('users','new_trips.user_id','=','users.id')
+                        ->join('user_info', 'user_info.user_id','=','new_trips.user_id')
+                        ->select('new_trips.*', 'users.name as userName', 'user_info.avatar as userAvatar')
+                        ->where('new_trips.name','like','%'.$searchterm.'%')
+                        ->orWhere('new_trips.location','like','%'.$searchterm.'%')
+                        ->get();
 
             return \response()->json([
-                'searchResults' => $searchResults,
+                'trips' => $trips,
                 'searchterm' => $searchterm,
                 'status_code' => '200',
             ],200);
@@ -228,7 +231,7 @@ class TripController extends Controller
             }
         }
         else {
-            return ErrorsController::requestError('Không có dữ liệu ảnh cover');
+            return ErrorsController::requestError('not has cover');
         }
     }
 

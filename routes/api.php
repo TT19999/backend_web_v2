@@ -1,11 +1,16 @@
 <?php
 
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JwtAuthController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TripController;
+use App\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -27,6 +32,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
  
     Route :: get('logout',[JwtAuthController::class, 'logout']);
     Route :: get('user-info', [JwtAuthController::class, 'getUser']);
+    Route :: post('/reset-password', [JwtAuthController::class,'resetPassword']);
 
     // profile
     Route :: get('/profile/getUserInfo', [ProfileController::class,'getUserInfo']);
@@ -45,12 +51,35 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route :: get ('/trip/user', [TripController::class, 'userTrips']);
 
 
-    //user
+
+    //user 
     Route::post('/user/update', [UserController::class,'BecomeContributor']);
     Route::get('/admin/getRequestUser', [UserController::class, 'GetAllRequestContributor']);
     Route::post('/admin/updateUser',[UserController::class, 'setContributor']);
+    Route::get('/notify',[UserController::class,'getNotification']);
+    Route::get('/admin/allUser',[UserController::class,'getAllUser']);
+    Route::get('/admin/user',[UserController::class,'getUser']);
+
+    //order
+    Route::post('/order/create/{id}',[OrderController::class,'create']);
+    Route::get('/order',[OrderController::class,'index']);
+    Route::get('/order/show',[OrderController::class,'show']);
+
+    //comments
+    Route::post('/comment/create/{trip}',[CommentController::class,'create']);
+    Route::delete('/comment/delete/{comment}',[CommentController::class,'delete']);
+    Route::get('/comment/user',[CommentController::class,'userIndex']);
+
+    Route::get('/contact/index',[ContactController::class,'index']);
+    Route::delete('/contact/delete/{id}',[ContactController::class,'delete']);
+
     
 });
+    Route::post('/contact/create',[ContactController::class,'create']);
+    Route::get('/comment/trip/{trip}',[CommentController::class,'index']);
+    Route::get('/delete/{user}',[UserController::class,'deleteUser']);
+
+
 Route :: get('/trip/byId', [TripController::class,'getTripById']);
 Route :: get('/trip', [TripController::class,'getAllTrip']);
 Route :: post('/trip/search',[TripController::class,'search']);

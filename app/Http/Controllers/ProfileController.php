@@ -74,7 +74,7 @@ class ProfileController extends Controller
                     'path' => $path,
                 ],201);
             }else {
-                return ErrorsController::requestError('Không có dữ liệu avatar');
+                return ErrorsController::requestError('not has avatar');
             }
         }catch(\Illuminate\Database\QueryException $ex){
             return ErrorsController::internalServeError('Internal Serve Error');
